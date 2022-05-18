@@ -3,8 +3,10 @@
 
 void main()
 {
-    create_fs();
-    sync_fs();
+    // create_fs();
+    // sync_fs();
+    mount_fs();
+    prinft_fs();
     printf("done\n");
-    // printf("%d\n", sb.num_inodes);
+    
 }

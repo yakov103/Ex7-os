@@ -40,6 +40,7 @@ void create_fs()
     for (i = 0; i < sb.num_inodes; i++)
     {
         inodes[i].size = -1;
+        inodes[i].first_block = -1;
         strcpy(inodes[i].name, "emptyfi");
 
     } // init inodes
@@ -60,15 +61,16 @@ void mount_fs()
     file = fopen("fs_data", "r");
 
     // superblock
-    fread (&sb, sizeof(struct superblock), 1, file);
+    fread(&sb, sizeof(struct superblock), 1, file);
 
     // inodes
-    int i;
-    for (i = 0 ; i < sb.num_i){
+    inodes = malloc(sizeof(struct inode) * sb.num_inodes);
+    dbs = malloc(sizeof(struct disk_block) * sb.num_blocks);
 
-    }
+    fread(inodes , sizeof(struct inode), sb.num_inodes, file);
+    fread(dbs, sizeof(struct disk_block), sb.num_blocks, file);
 
-
+    fclose(file);
 } // mount_fs()
 
 // write the file system
@@ -94,3 +96,24 @@ void sync_fs()
     fclose(file);
 
 } // sync_fs
+
+void prinft_fs()
+{
+    printf("Superblock info \n");
+    printf("\tnum inodes: %d\n", sb.num_inodes);
+    printf("\tnum blocks: %d\n", sb.num_blocks);
+    printf("\tsize blocks: %d\n", sb.size_blocks);
+
+    printf("inodes\n");
+    int i;
+    for (i = 0; i < sb.num_inodes; i++)
+    {
+        printf("\tsize: %d block: %d name: %s\n", inodes[i].size, inodes[i].first_block, inodes[i].name);
+    } // init inodes
+
+    for (i = 0; i < sb.num_blocks; i++)
+    {
+        printf("\tblock num: %d next block %d\n", i, dbs[i].next_block_num);
+    } // init disk_block
+
+} // print_fs
