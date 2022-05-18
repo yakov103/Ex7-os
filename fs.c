@@ -1,5 +1,5 @@
 #include <stdlib.h>
-// #include <string.h>
+#include <string.h>
 #include <stdio.h>
 #include "fs.h"
 /*
@@ -40,7 +40,8 @@ void create_fs()
     for (i = 0; i < sb.num_inodes; i++)
     {
         inodes[i].size = -1;
-        inodes[i].name = "";
+        strcpy(inodes[i].name, "emptyfi");
+
     } // init inodes
 
     dbs = malloc(sizeof(struct disk_block) * sb.num_blocks);
@@ -55,6 +56,19 @@ void create_fs()
 // load a file system
 void mount_fs()
 {
+    FILE *file;
+    file = fopen("fs_data", "r");
+
+    // superblock
+    fread (&sb, sizeof(struct superblock), 1, file);
+
+    // inodes
+    int i;
+    for (i = 0 ; i < sb.num_i){
+
+    }
+
+
 } // mount_fs()
 
 // write the file system
@@ -63,18 +77,18 @@ void sync_fs()
     FILE *file;
     file = fopen("fs_data", "w+");
     // superblock
-    fwrite(sb, sizeof(struct superblock), 1, file);
+    fwrite(&sb, sizeof(struct superblock), 1, file);
 
     // inodes
     int i;
     for (i = 0; i < sb.num_inodes; i++)
     {
-        fwrite(inodes[i],sizeof(struct inode), 1, file);
+        fwrite(&(inodes[i]), sizeof(struct inode), 1, file);
     } // fwrite inodes
 
     for (i = 0; i < sb.num_blocks; i++)
     {
-        fwrite(dbs[i],sizeof(struct disk_block), 1, file);
+        fwrite(&(dbs[i]), sizeof(struct disk_block), 1, file);
     } // fwrite disk_block
 
     fclose(file);

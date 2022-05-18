@@ -1,13 +1,23 @@
 CC=g++
 flags=-Wall -Wextra -Werror -std=c++2a
+BINS=mkfs main
+BINS=mkfs
+all:test
 
-all:mkfs main
+test:test.o fs.o fs.h
+	gcc -o test test.o fs.o
 
-main:main.cpp
-	$(CC) $(flags) main.cpp -o main
+test.o: test.c fs.h
+	gcc -c test.c
 
-mkfs:
-	$(CC) $(flags) -o mkfs mkfs.cpp; ./mkfs
+fs.o: fs.c fs.h
+	gcc -c fs.c
 
 clean:
-	rm -f mkfs
+	rm -f *.o test fs
+
+# mkfs:
+# 	$(CC) $(flags) -o mkfs mkfs.cpp; ./mkfs
+
+# clean:
+# 	rm -f mkfs
