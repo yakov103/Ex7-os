@@ -29,4 +29,7 @@ void create_fs(); // initialize new filesystem
 void mount_fs();  // load a file system
 void sync_fs();   // write the file system
 
-void prinft_fs(); // print out info avbout the file system
+// return filenumber
+int allocat_file(char name[8]);
+
+void print_fs(); // print out info avbout the file system

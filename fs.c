@@ -28,6 +28,32 @@ struct superblock sb;
 struct inode *inodes;
 struct disk_block *dbs;
 
+int find_empty_inode()
+{
+    int i;
+    for (i = 0; i < sb.num_inodes; i++)
+    {
+        if (inodes[i].first_block == -1)
+        {
+            return i;
+        }
+    }
+    return -1;
+} // return empty inode
+
+int find_empty_block()
+{
+    int i;
+    for (i = 0; i < sb.num_blocks; i++)
+    {
+        if (dbs[i].next_block_num == -1)
+        {
+            return i;
+        }
+    }
+    return -1;
+} // return empty block
+
 // initialize new filesystem
 void create_fs()
 {
@@ -67,7 +93,7 @@ void mount_fs()
     inodes = malloc(sizeof(struct inode) * sb.num_inodes);
     dbs = malloc(sizeof(struct disk_block) * sb.num_blocks);
 
-    fread(inodes , sizeof(struct inode), sb.num_inodes, file);
+    fread(inodes, sizeof(struct inode), sb.num_inodes, file);
     fread(dbs, sizeof(struct disk_block), sb.num_blocks, file);
 
     fclose(file);
@@ -81,23 +107,14 @@ void sync_fs()
     // superblock
     fwrite(&sb, sizeof(struct superblock), 1, file);
 
-    // inodes
-    int i;
-    for (i = 0; i < sb.num_inodes; i++)
-    {
-        fwrite(&(inodes[i]), sizeof(struct inode), 1, file);
-    } // fwrite inodes
-
-    for (i = 0; i < sb.num_blocks; i++)
-    {
-        fwrite(&(dbs[i]), sizeof(struct disk_block), 1, file);
-    } // fwrite disk_block
+    fwrite(inodes, sizeof(struct inode), sb.num_inodes, file);
+    fwrite(dbs, sizeof(struct disk_block), sb.num_blocks, file);
 
     fclose(file);
 
 } // sync_fs
 
-void prinft_fs()
+void print_fs()
 {
     printf("Superblock info \n");
     printf("\tnum inodes: %d\n", sb.num_inodes);
@@ -117,3 +134,20 @@ void prinft_fs()
     } // init disk_block
 
 } // print_fs
+
+int allocat_file(char name[8])
+{
+    // find an empty inode
+    int in = find_empty_inode();
+    // find / claim a disk block
+    int block = find_empty_block();
+
+    // claim them
+    inodes[in].first_block = block;
+    dbs[block].next_block_num = -2;
+
+    strcpy((inodes[in]).name, name);
+    // return the file descriptor
+    return in;
+
+} // allocate_file
