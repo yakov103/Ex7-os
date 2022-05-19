@@ -41,6 +41,29 @@ int find_empty_inode()
     return -1;
 } // return empty inode
 
+int get_block_num(int file, int offset)
+{
+
+    int togo = offset;
+    int bn = inodes[file].first_block;
+    while (togo > 0)
+    {
+        bn = dbs[bn].next_block_num;
+        togo--;
+    }
+    return bn;
+} // get_block_num
+
+void shorten_file(int bn)
+{
+    int nn = dbs[bn].next_block_num;
+    if (nn >= 0)
+    {
+        shorten_file(nn);
+    }
+    dbs[bn].next_block_num = -1;
+} // shorten_file
+
 int find_empty_block()
 {
     int i;
@@ -135,7 +158,7 @@ void print_fs()
 
 } // print_fs
 
-int allocat_file(char name[8])
+int allocate_file(char name[8])
 {
     // find an empty inode
     int in = find_empty_inode();
@@ -151,3 +174,46 @@ int allocat_file(char name[8])
     return in;
 
 } // allocate_file
+
+// add / delet blocks
+void set_filesize(int filenum, int size)
+{
+
+    // how many blocks should we have
+    int tmp = size + BLOCKSIZE - 1;
+    int num = tmp / BLOCKSIZE;
+    int bn = inodes[filenum].first_block;
+    num--;
+    // grow the file if necessary
+    while (num > 0)
+    {
+        // check next block number
+        int next_num = dbs[bn].next_block_num;
+        if (next_num == -1)
+        {
+            int empty = find_empty_block();
+            dbs[bn].next_block_num = empty;
+            dbs[empty].next_block_num = -2;
+        }
+        bn = dbs[bn].next_block_num;
+        num--;
+    }
+
+    // shoten if necessary
+    shorten_file(bn);
+    dbs[bn].next_block_num = -2;
+
+} // set_filesize
+void write_byte(int filenum, int pos, char *data)
+{
+    // calculate which block
+    int relative_block = pos / BLOCKSIZE;
+
+    // find th eblock number
+    int bn = get_block_num(filenum, relative_block);
+    // calculate the offset in the block
+    int offset = pos % BLOCKSIZE;
+    // write the data
+    dbs[bn].data[offset] = (*data);
+
+} // write_byte
