@@ -204,16 +204,24 @@ void set_filesize(int filenum, int size)
     dbs[bn].next_block_num = -2;
 
 } // set_filesize
-void write_byte(int filenum, int pos, char *data)
+__ssize_t mywrite(int myfd, const void *buf, size_t count)
 {
     // calculate which block
-    int relative_block = pos / BLOCKSIZE;
+    // int relative_block = pos / BLOCKSIZE;
 
     // find th eblock number
-    int bn = get_block_num(filenum, relative_block);
+    int bn = get_block_num(myfd, 0);
     // calculate the offset in the block
-    int offset = pos % BLOCKSIZE;
+    // int offset = pos % BLOCKSIZE;
     // write the data
-    dbs[bn].data[offset] = (*data);
+    for (size_t i = 0; i < count; i++)
+    {
+        /* code */
+        dbs[bn].data[i] = ((char *)buf)[i];
+    }
+    
+    // dbs[bn].data[offset] = (*data);
 
-} // write_byte
+    return count;
+
+} // mywrite

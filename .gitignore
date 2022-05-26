@@ -2,3 +2,10 @@ fs.o
 test.o
 test
 fs_data
+*.o
+
+.vscode/configurationCache.log
+.gitignore
+.vscode/dryrun.log
+.vscode/settings.json
+.vscode/targets.log

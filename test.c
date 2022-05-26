@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include "fs.h"
 
-void main()
+int main()
 {
     /**
      * @brief first check this
      *
      */
-    // create_fs();
-    // sync_fs();
+    create_fs();
+    sync_fs();
 
     /***/
     // mount_fs();
@@ -43,17 +43,20 @@ void main()
      * *
      * ****/
 
-     mount_fs();
+    mount_fs();
     // allocate_file("first");
     int file = allocate_file("another");
-    set_filesize(file, 5000);
-    char data = 'b';
-    int i;
-    for (i = 0; i < 49; i++)
-    {
-        write_byte(file, i * 100, &data);
-    }
+
+    char *data = "dolev";
+    
+
+    // https://stackoverflow.com/questions/2329842/checking-for-success-of-fwrite-in-c-perror
+    // ssize_t mywrite(int myfd, const void *buf, size_t count);
+
+    mywrite(file, data, sizeof(data));
 
     sync_fs();
     printf("done\n");
+
+    return 0;
 } // main

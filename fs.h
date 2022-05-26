@@ -34,6 +34,7 @@ void sync_fs();   // write the file system
 // return filenumber
 int allocate_file(char name[8]);
 void set_filesize(int filenum, int size);
-void write_byte(int filenum, int pos, char *data);
+// ssize_t mywrite(int myfd, const void *buf, size_t count);
+__ssize_t mywrite(int myfd, const void *buf, size_t count);
 
 void print_fs(); // print out info avbout the file system
