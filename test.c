@@ -56,6 +56,8 @@ int main()
     mywrite(file, data, sizeof(data));
 
     sync_fs();
+
+    print_fs();
     printf("done\n");
 
     return 0;
