@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
     // printf("done\n");
 
     int dir_num = mymkfs();
-    const char* dir_name = "root";
+    const char *dir_name = "root";
     myDIR *root = myopendir(dir_name);
 
     if (root->inode_num == dir_num)
@@ -95,9 +95,16 @@ int main(int argc, char *argv[])
         printf("\nroot directory is not created\n");
     }
 
-    
-
-
+    //     enum Permission
+    // {
+    //     PERMISSION_READ, // 0
+    //     PERMISSION_WRITE, // 1
+    //     PERMISSION_EXECUTE, // 2
+    //     PERMISSION_UNSET // 3
+    // };
+    const char *file_name = "first";
+    int file_num = myopen(file_name, PERMISSION_WRITE);
+    printf("file num is %d\n", file_num);
 
     // char data[8] = "dolev";
     // https://stackoverflow.com/questions/2329842/checking-for-success-of-fwrite-in-c-perror

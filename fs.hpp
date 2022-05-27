@@ -109,4 +109,4 @@ int myclosedir(myDIR *);
 extern struct superblock sb;
 extern struct inode *inodes;
 extern struct disk_block *dbs;
-extern struct inode myopenfile[MAX_FILES];
+extern int myopenfile[MAX_FILES];

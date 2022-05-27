@@ -91,6 +91,7 @@ void create_fs()
         inodes[i].size = -1;
         inodes[i].first_block = -1;
         strcpy(inodes[i].name, "emptyfi");
+        inodes[i].type = FILE_TYPE_UNSET;
 
     } // init inodes
 
@@ -304,6 +305,9 @@ int myopen(const char *pathname, int flags)
         // find an empty inode
         in = find_empty_inode();
         strcpy((inodes[in]).name, pathname);
+        inodes[in].type = FILE_TYPE_REGULAR;
+        inodes[in].size = 0;
+        dbs[inodes[in].first_block].next_block_num = -2;
     }
 
     // // claim them
@@ -317,9 +321,9 @@ int myopen(const char *pathname, int flags)
 
 myDIR *myopendir(const char *name)
 {
-    if (!strcmp(name, "root"))
+    if (name[0] != 'r' && name[1] != 'o' && name[2] != 'o' && name[3] != 't')
     {
-        printf("not a directory\n");
+        printf("invalid directory\n");
         return NULL;
     }
     myDIR *rootDIR = new myDIR();
@@ -332,6 +336,7 @@ myDIR *myopendir(const char *name)
     }
     else
     {
+        myopenfile[0] = 0;
         return rootDIR;
     }
 
