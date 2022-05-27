@@ -80,6 +80,11 @@ int find_empty_block()
 // initialize new filesystem
 void create_fs()
 {
+    // for (int i = 0; i < MAX_FILES; i++)
+    // {
+    //     myopenfile[i] = -1;
+    // }
+
     sb.num_inodes = 10;
     sb.num_blocks = 100;
     sb.size_blocks = sizeof(struct disk_block);
@@ -302,12 +307,22 @@ int myopen(const char *pathname, int flags)
     }
     if (flags == PERMISSION_WRITE || flags == PERMISSION_EXECUTE)
     {
-        // find an empty inode
-        in = find_empty_inode();
-        strcpy((inodes[in]).name, pathname);
-        inodes[in].type = FILE_TYPE_REGULAR;
-        inodes[in].size = 0;
-        dbs[inodes[in].first_block].next_block_num = -2;
+        if (file_num == -1)
+        {
+            // error no such file
+            // find an empty inode
+            in = find_empty_inode();
+            strcpy((inodes[in]).name, pathname);
+            inodes[in].type = FILE_TYPE_REGULAR;
+            inodes[in].size = 0;
+            dbs[inodes[in].first_block].next_block_num = -2;
+        }
+        else
+        {
+            // exists
+            in = file_num;
+
+        }
     }
 
     // // claim them
