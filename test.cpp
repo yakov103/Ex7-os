@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
     // printf("done\n");
 
     mymkfs();
-    
+    myDIR *a = ;
 
     return 0;
 } // main
