@@ -184,13 +184,13 @@ int allocate_file(char name[8])
 
     // find an empty inode
     int in = find_empty_inode();
-    printf("\n%d\n", in);
     // find / claim a disk block
-    int block = find_empty_block();
+    // int block = find_empty_block();
 
     // claim them
-    inodes[in].first_block = block;
-    dbs[block].next_block_num = -2;
+    // inodes[in].first_block = block;
+    inodes[in].size = 0;
+    dbs[inodes[in].first_block].next_block_num = -2;
 
     strcpy((inodes[in]).name, name);
     // return the file descriptor
@@ -259,6 +259,7 @@ int mymkfs()
     sync_fs();
     char param[8] = "root";
     int directory = allocate_file(param);
+    inodes[directory].type = FILE_TYPE_DIRECTORY;
     return directory;
 
 } // mymkfs
@@ -266,6 +267,7 @@ int mymkfs()
 int myopen(const char *pathname, int flags)
 {
 
+    int in;
     // check if file exists
     int file_num = -1;
     for (int i = 0; i < sb.num_inodes; i++)
@@ -275,24 +277,62 @@ int myopen(const char *pathname, int flags)
             file_num = i;
         }
     }
-    if (file_num == -1)
+
+    //     enum Permission
+    // {
+    //     PERMISSION_READ, // 0
+    //     PERMISSION_WRITE, // 1
+    //     PERMISSION_EXECUTE, // 2
+    //     PERMISSION_UNSET // 3
+    // };
+    if (flags == PERMISSION_READ)
     {
-        // error no such file
-        printf("file does not exist\n");
-        return -1;
+        // so its read only
+        if (file_num == -1)
+        {
+            // error no such file
+            printf("file does not exist\n");
+            return -1;
+        }
+        else
+        {
+            return file_num;
+        }
+    }
+    if (flags == PERMISSION_WRITE || flags == PERMISSION_EXECUTE)
+    {
+        // find an empty inode
+        in = find_empty_inode();
+        strcpy((inodes[in]).name, pathname);
     }
 
-    // find an empty inode
-    int in = find_empty_inode();
-    // find / claim a disk block
-    int block = find_empty_block();
+    // // claim them
+    // inodes[in].first_block = block;
+    // dbs[block].next_block_num = -2;
 
-    // claim them
-    inodes[in].first_block = block;
-    dbs[block].next_block_num = -2;
-
-    strcpy((inodes[in]).name, pathname);
     // return the file descriptor
     return in;
 
 } // myopen
+
+myDIR *myopendir(const char *name)
+{
+    if (!strcmp(name, "root"))
+    {
+        printf("not a directory\n");
+        return NULL;
+    }
+    myDIR *rootDIR = new myDIR();
+    rootDIR->inode_num = 0;
+    rootDIR->inode = &inodes[rootDIR->inode_num];
+    if (rootDIR->inode->type != FILE_TYPE_DIRECTORY)
+    {
+        printf("not a directory\n");
+        return NULL;
+    }
+    else
+    {
+        return rootDIR;
+    }
+
+} // myopendir

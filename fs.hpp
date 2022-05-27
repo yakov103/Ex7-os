@@ -19,17 +19,17 @@
 
 enum FileType
 {
-    FILE_TYPE_REGULAR,
-    FILE_TYPE_DIRECTORY,
-    FILE_TYPE_UNSET
+    FILE_TYPE_REGULAR, // 0
+    FILE_TYPE_DIRECTORY, // 1
+    FILE_TYPE_UNSET // 2 
 };
 
 enum Permission
 {
-    PERMISSION_READ,
-    PERMISSION_WRITE,
-    PERMISSION_EXECUTE,
-    PERMISSION_UNSET
+    PERMISSION_READ, // 0
+    PERMISSION_WRITE, // 1
+    PERMISSION_EXECUTE, // 2
+    PERMISSION_UNSET // 3
 };
 
 struct superblock
@@ -97,13 +97,13 @@ void print_fs(); // print out info avbout the file system
 
 int mymkfs();
 
-int myopen(const char *, int);
+int myopen(const char *, int);  // finish i think open a inode with flags 
 int myclose(int);
 ssize_t myread(int, void *, size_t t);
 ssize_t mywrite(int, const void *, size_t);
 off_t mylseek(int, off_t, int);
-myDIR *myopendir(const char *);
-struct mydirent *myreaddir(myDIR *);
+myDIR *myopendir(const char *); // finish i think , open root directory 
+struct mydirent *myreaddir(myDIR *); 
 int myclosedir(myDIR *);
 
 extern struct superblock sb;

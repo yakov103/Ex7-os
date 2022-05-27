@@ -83,12 +83,21 @@ int main(int argc, char *argv[])
     // printf("done\n");
 
     int dir_num = mymkfs();
+    const char* dir_name = "root";
+    myDIR *root = myopendir(dir_name);
 
-    myDIR a = myDIR();
-    a.inode = &inodes[dir_num];
-    a.inode->used_size = 0;
-    a.inode->size = sizeof(struct disk_block) * 10;
-    a.inode->type = FILE_TYPE_DIRECTORY;
+    if (root->inode_num == dir_num)
+    {
+        printf("\nroot directory is created\n");
+    }
+    else
+    {
+        printf("\nroot directory is not created\n");
+    }
+
+    
+
+
 
     // char data[8] = "dolev";
     // https://stackoverflow.com/questions/2329842/checking-for-success-of-fwrite-in-c-perror
