@@ -1,16 +1,22 @@
-all:clean test
+CC=g++
+FLAGS=-std=c++2a -g -Wall
 
-test:test.o fs.o fs.h
-	gcc -g -Wall -o test test.o fs.o
+all:test run
 
-test.o: test.c fs.h
-	gcc -g -Wall -c test.c
+run:
+	./test 100
 
-fs.o: fs.c fs.h
-	gcc -g -Wall -c fs.c
+test:test.o fs.o fs.hpp
+	$(CC) $(FLAGS) -o test test.o fs.o
+
+test.o: test.cpp fs.hpp
+	$(CC) $(FLAGS) -c test.cpp
+
+fs.o: fs.cpp fs.hpp
+	$(CC) $(FLAGS) -c fs.cpp
 
 clean:
-	rm -f *.o test fs_data
+	rm -f *.o test fs_data a.out
 
 # mkfs:
 # 	$(CC) $(flags) -o mkfs mkfs.cpp; ./mkfs

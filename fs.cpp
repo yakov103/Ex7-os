@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "fs.h"
+#include "fs.hpp"
 /*
 struct superblock
 {
@@ -85,7 +85,7 @@ void create_fs()
     sb.size_blocks = sizeof(struct disk_block);
 
     int i;
-    inodes = malloc(sizeof(struct inode) * sb.num_inodes);
+    inodes = (struct inode *)malloc(sizeof(struct inode) * sb.num_inodes);
     for (i = 0; i < sb.num_inodes; i++)
     {
         inodes[i].size = -1;
@@ -94,7 +94,18 @@ void create_fs()
 
     } // init inodes
 
-    dbs = malloc(sizeof(struct disk_block) * sb.num_blocks);
+    inodes[0].first_block = 0;
+    inodes[1].first_block = 10;
+    inodes[2].first_block = 20;
+    inodes[3].first_block = 30;
+    inodes[4].first_block = 40;
+    inodes[5].first_block = 50;
+    inodes[6].first_block = 60;
+    inodes[7].first_block = 70;
+    inodes[8].first_block = 80;
+    inodes[9].first_block = 90;
+
+    dbs = (struct disk_block *)malloc(sizeof(struct disk_block) * sb.num_blocks);
 
     for (i = 0; i < sb.num_blocks; i++)
     {
@@ -113,8 +124,8 @@ void mount_fs()
     fread(&sb, sizeof(struct superblock), 1, file);
 
     // inodes
-    inodes = malloc(sizeof(struct inode) * sb.num_inodes);
-    dbs = malloc(sizeof(struct disk_block) * sb.num_blocks);
+    inodes = (struct inode *)malloc(sizeof(struct inode) * sb.num_inodes);
+    dbs = (struct disk_block *)malloc(sizeof(struct disk_block) * sb.num_blocks);
 
     fread(inodes, sizeof(struct inode), sb.num_inodes, file);
     fread(dbs, sizeof(struct disk_block), sb.num_blocks, file);
@@ -160,6 +171,17 @@ void print_fs()
 
 int allocate_file(char name[8])
 {
+    // check if file exists
+    int i;
+    for (i = 0; i < sb.num_inodes; i++)
+    {
+        if (strcmp(inodes[i].name, name) == 0)
+        {
+            printf("file already exists\n");
+            return i;
+        }
+    }
+
     // find an empty inode
     int in = find_empty_inode();
     // find / claim a disk block
@@ -204,6 +226,7 @@ void set_filesize(int filenum, int size)
     dbs[bn].next_block_num = -2;
 
 } // set_filesize
+
 __ssize_t mywrite(int myfd, const void *buf, size_t count)
 {
     // calculate which block
@@ -219,9 +242,53 @@ __ssize_t mywrite(int myfd, const void *buf, size_t count)
         /* code */
         dbs[bn].data[i] = ((char *)buf)[i];
     }
-    
+
+    inodes[myfd].size = count;
+
     // dbs[bn].data[offset] = (*data);
 
     return count;
 
 } // mywrite
+
+void mymkfs()
+{
+
+    create_fs();
+    sync_fs();
+
+} // mymkfs
+
+int myopen(const char *pathname, int flags)
+{
+
+    // check if file exists
+    int file_num = -1;
+    for (int i = 0; i < sb.num_inodes; i++)
+    {
+        if (strcmp(inodes[i].name, pathname) == 0)
+        {
+            file_num = i;
+        }
+    }
+    if (file_num == -1)
+    {
+        // error no such file
+        printf("file does not exist\n");
+        return -1;
+    }
+
+    // find an empty inode
+    int in = find_empty_inode();
+    // find / claim a disk block
+    int block = find_empty_block();
+
+    // claim them
+    inodes[in].first_block = block;
+    dbs[block].next_block_num = -2;
+
+    strcpy((inodes[in]).name, pathname);
+    // return the file descriptor
+    return in;
+
+} // myopen

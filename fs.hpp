@@ -1,4 +1,4 @@
-
+#pragma once
 
 // meta information about the filesystem
 // number of inodes
@@ -6,6 +6,8 @@
 // size of the disk blocks
 
 #define BLOCKSIZE 512
+#define MAXFILESYSTEMSIZE 51600
+#define MAX_FILES 10000
 
 struct superblock
 {
@@ -16,6 +18,8 @@ struct superblock
 
 struct inode
 {
+    int permissions;
+    int used_size;
     int size;
     int first_block;
     char name[8];
@@ -38,3 +42,11 @@ void set_filesize(int filenum, int size);
 __ssize_t mywrite(int myfd, const void *buf, size_t count);
 
 void print_fs(); // print out info avbout the file system
+
+void mymkfs();
+
+extern struct inode myopenfile[MAX_FILES];
+
+int myopen(const char *, int);
+
+int mymount(const char *source, const char *target, const char *filesystemtype, unsigned long mountflags, const void *data);
