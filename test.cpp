@@ -82,9 +82,26 @@ int main(int argc, char *argv[])
     // print_fs();
     // printf("done\n");
 
-    mymkfs();
-    myDIR a = myDIR();
-    a.inode = allocate_file("direc");
+    int dir_num = mymkfs();
 
+    myDIR a = myDIR();
+    a.inode = &inodes[dir_num];
+    a.inode->used_size = 0;
+    a.inode->size = sizeof(struct disk_block) * 10;
+    a.inode->type = FILE_TYPE_DIRECTORY;
+
+    // char data[8] = "dolev";
+    // https://stackoverflow.com/questions/2329842/checking-for-success-of-fwrite-in-c-perror
+    // ssize_t mywrite(int myfd, const void *buf, size_t count);
+    // mywrite(file, data, sizeof(data));
+    // myDIR a = myDIR();
+    // char mySTR[8] = "direct";
+    // int inode_num = allocate_file(mySTR);
+    // a.inode_num = inode_num;
+    // a.inode = &inodes[inode_num];
+
+    sync_fs();
+
+    print_fs();
     return 0;
 } // main

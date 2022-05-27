@@ -16,7 +16,6 @@
 #define BLOCKSIZE 512
 #define MAXFILESYSTEMSIZE 51600
 #define MAX_FILES 10000
-extern struct inode myopenfile[MAX_FILES];
 
 enum FileType
 {
@@ -54,23 +53,23 @@ class myDIR
 {
 public:
     int inode_num;
-    struct inode inode;
+    struct inode *inode;
     std::vector<std::string> files_names;
     std::vector<std::string> open_files = {};
     myDIR() = default;
-    myDIR(struct inode inode, struct superblock *sb, struct inode *inodes)
+    myDIR(struct inode *inode, struct superblock *sb, struct inode *inodes)
     {
-        this->inode_num = ;
+        // this->inode_num = ;
         this->inode = inode;
-        this->inode.type = FILE_TYPE_DIRECTORY;
-        strcpy(this->inode.name, "root");
+        this->inode->type = FILE_TYPE_DIRECTORY;
+        strcpy(this->inode->name, "root");
         // TODO decide if this is the right way to do this
         // this->inode.permission = PERMISSION_READ;
-        this->inode.used_size = 0;
-        this->inode.size = 0;
-        this->inode.first_block = -1;
+        this->inode->used_size = 0;
+        this->inode->size = 0;
+        this->inode->first_block = -2;
 
-        for (int i = 0; i < sb.num_inodes; i++)
+        for (int i = 0; i < sb->num_inodes; i++)
         {
             files_names.push_back(inodes[i].name);
             std::cout << inodes[i].name << std::endl;
@@ -96,7 +95,7 @@ __ssize_t mywrite(int myfd, const void *buf, size_t count);
 
 void print_fs(); // print out info avbout the file system
 
-void mymkfs();
+int mymkfs();
 
 int myopen(const char *, int);
 int myclose(int);
@@ -106,3 +105,8 @@ off_t mylseek(int, off_t, int);
 myDIR *myopendir(const char *);
 struct mydirent *myreaddir(myDIR *);
 int myclosedir(myDIR *);
+
+extern struct superblock sb;
+extern struct inode *inodes;
+extern struct disk_block *dbs;
+extern struct inode myopenfile[MAX_FILES];

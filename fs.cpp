@@ -33,7 +33,7 @@ int find_empty_inode()
     int i;
     for (i = 0; i < sb.num_inodes; i++)
     {
-        if (inodes[i].first_block == -1)
+        if (inodes[i].size == -1)
         {
             return i;
         }
@@ -159,7 +159,7 @@ void print_fs()
     int i;
     for (i = 0; i < sb.num_inodes; i++)
     {
-        printf("\tsize: %d block: %d name: %s\n", inodes[i].size, inodes[i].first_block, inodes[i].name);
+        printf("\tsize: %d block: %d name: %s type: %d used_size: %d\n", inodes[i].size, inodes[i].first_block, inodes[i].name, inodes[i].type, inodes[i].used_size);
     } // init inodes
 
     for (i = 0; i < sb.num_blocks; i++)
@@ -184,6 +184,7 @@ int allocate_file(char name[8])
 
     // find an empty inode
     int in = find_empty_inode();
+    printf("\n%d\n", in);
     // find / claim a disk block
     int block = find_empty_block();
 
@@ -251,11 +252,14 @@ __ssize_t mywrite(int myfd, const void *buf, size_t count)
 
 } // mywrite
 
-void mymkfs()
+int mymkfs()
 {
 
     create_fs();
     sync_fs();
+    char param[8] = "root";
+    int directory = allocate_file(param);
+    return directory;
 
 } // mymkfs
 
