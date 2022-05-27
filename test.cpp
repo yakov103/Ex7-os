@@ -3,8 +3,6 @@
 #include <string.h>
 #include <string>
 
-
-
 int main(int argc, char *argv[])
 {
     // https://www.geeksforgeeks.org/command-line-arguments-in-c-cpp/
@@ -85,7 +83,8 @@ int main(int argc, char *argv[])
     // printf("done\n");
 
     mymkfs();
-    myDIR *a = ;
+    myDIR a = myDIR();
+    a.inode = allocate_file("direc");
 
     return 0;
 } // main

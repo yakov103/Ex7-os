@@ -53,12 +53,14 @@ struct inode
 class myDIR
 {
 public:
+    int inode_num;
     struct inode inode;
     std::vector<std::string> files_names;
     std::vector<std::string> open_files = {};
     myDIR() = default;
-    myDIR(struct inode inode, struct superblock sb, struct inode *inodes)
+    myDIR(struct inode inode, struct superblock *sb, struct inode *inodes)
     {
+        this->inode_num = ;
         this->inode = inode;
         this->inode.type = FILE_TYPE_DIRECTORY;
         strcpy(this->inode.name, "root");
