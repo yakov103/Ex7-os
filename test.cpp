@@ -106,7 +106,9 @@ int main(int argc, char *argv[])
     int file_num = myopen(file_name, PERMISSION_WRITE);
     printf("file num is %d\n", file_num);
     char buffer[5000];
-    myread(file_num, (void *)buffer, 1536, 2);
+    strcpy(buffer, "yakov is good");
+    mywrite(file_num, buffer, strlen(buffer));
+    myread(file_num, (void *)buffer, 1536);
 
     // char data[8] = "dolev";
     // https://stackoverflow.com/questions/2329842/checking-for-success-of-fwrite-in-c-perror

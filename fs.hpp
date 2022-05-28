@@ -1,4 +1,5 @@
-#pragma once
+#ifndef FS_HPP
+#define FS_HPP
 // meta information about the filesystem
 // number of inodes
 // numver of disk blocks
@@ -7,11 +8,8 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include <fstream>
-#include <sstream>
-#include <cstdlib>
-#include <cstring>
 #include <string.h>
+#include <sys/types.h>
 
 #define BLOCKSIZE 512
 #define MAXFILESYSTEMSIZE 51600
@@ -99,7 +97,7 @@ int mymkfs();
 int myopen(const char *, int); // finish i think open a inode with flags
 int myclose(int);
 
-ssize_t myread(int, void *, int, int);
+ssize_t myread(int, void *, size_t);
 
 ssize_t mywrite(int, const void *, size_t);
 off_t mylseek(int, off_t, int);
@@ -110,3 +108,5 @@ int myclosedir(myDIR *);
 extern struct superblock sb;
 extern struct inode *inodes;
 extern struct disk_block *dbs;
+
+#endif

@@ -231,29 +231,29 @@ void set_filesize(int filenum, int size)
 
 } // set_filesize
 
-__ssize_t mywrite(int myfd, const void *buf, size_t count)
-{
-    // calculate which block
-    // int relative_block = pos / BLOCKSIZE;
+// __ssize_t mywrite(int myfd, const void *buf, size_t count)
+// {
+//     // calculate which block
+//     // int relative_block = pos / BLOCKSIZE;
 
-    // find th eblock number
-    int bn = get_block_num(myfd, 0);
-    // calculate the offset in the block
-    // int offset = pos % BLOCKSIZE;
-    // write the data
-    for (size_t i = 0; i < count; i++)
-    {
-        /* code */
-        dbs[bn].data[i] = ((char *)buf)[i];
-    }
+//     // find th eblock number
+//     int bn = get_block_num(myfd, 0);
+//     // calculate the offset in the block
+//     // int offset = pos % BLOCKSIZE;
+//     // write the data
+//     for (size_t i = 0; i < count; i++)
+//     {
+//         /* code */
+//         dbs[bn].data[i] = ((char *)buf)[i];
+//     }
 
-    inodes[myfd].size = count;
+//     inodes[myfd].size = count;
 
-    // dbs[bn].data[offset] = (*data);
+//     // dbs[bn].data[offset] = (*data);
 
-    return count;
+//     return count;
 
-} // mywrite
+// } // mywrite
 
 int mymkfs()
 {
@@ -371,31 +371,91 @@ int myclose(int myfd)
     return -1;
 } // myclose
 
-ssize_t myread(int myfd, void *buf, int count ,int x)
+ssize_t myread(int myfd, void *buff, size_t count)
 {
-
+    printf("myread(%d, %p, %ld)\n", myfd, buff, count);
     // check if myfd is opened
     if (std::find(myDIR::open_files.begin(), myDIR::open_files.end(), myfd) != myDIR::open_files.end())
     {
+        if (inodes[myfd].type == FILE_TYPE_DIRECTORY)
+        {
+            printf("directory\n");
+            return 0;
+        }
+        if (inodes[myfd].permission != PERMISSION_READ)
+        {
+            printf("permission not set to read! denied\n");
+            return 0;
+        }
+
+        // TODO fix the other side of the equation
         if (inodes[myfd].used_size <= (int)count)
         {
             count = inodes[myfd].used_size;
         }
 
-        int data_block_num = inodes[myfd].first_block;
-        struct disk_block *first = &dbs[data_block_num];
+        // int data_block_num = inodes[myfd].first_block;
+        printf("\ncount %ld \n", count);
         int number_of_blocks_to_read = (int)count / BLOCKSIZE;
         printf("\nnumber of blocks to read %d\n", number_of_blocks_to_read);
-        int block_number = data_block_num;
-        int index_to_read = 0;
+        // int block_number = data_block_num;
+        // int index_to_read = 0;
     }
     else
     {
         printf("file not open\n");
         return 0;
     }
+
     return 0;
 } // myread
 
-// ssize_t mywrite(int, const void *, size_t);
+ssize_t mywrite(int myfd, const void *buff, size_t count)
+{
+     
+    printf("mywrite(%d, %p, %ld)\n", myfd, buff, count);
+    const char *data = (const char *)buff;
+    if (std::find(myDIR::open_files.begin(), myDIR::open_files.end(), myfd) != myDIR::open_files.end())
+    {
+        if (inodes[myfd].type == FILE_TYPE_DIRECTORY)
+        {
+            printf("directory\n");
+            return 0;
+        }
+        if (inodes[myfd].permission != PERMISSION_WRITE && inodes[myfd].permission != PERMISSION_EXECUTE)
+        {
+            printf("permission not set to write! denied\n");
+            return 0;
+        }
+
+        int data_block_num = inodes[myfd].first_block;
+        printf("\ncount %ld \n", count);
+        int number_of_blocks_to_write = (int)count / BLOCKSIZE;
+        printf("\nnumber of blocks to read %d\n", number_of_blocks_to_write);
+        int block_number = data_block_num;
+        int index_to_write = 0;
+        size_t iter_number = 0;
+        while (iter_number < count)
+        {
+            dbs[block_number].data[index_to_write] = data[index_to_write];
+            index_to_write++;
+            if (index_to_write % BLOCKSIZE == 0)
+            {
+                block_number++;
+                index_to_write = 0;
+            }
+            iter_number++;
+        }
+        inodes[myfd].used_size = count;
+    }
+    else
+    {
+        printf("file not open\n");
+        return 0;
+    }
+
+    return 0;
+
+} // mywrite
+
 // off_t mylseek(int, off_t, int);
