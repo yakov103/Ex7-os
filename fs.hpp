@@ -54,8 +54,8 @@ class myDIR
 public:
     int inode_num;
     struct inode *inode;
-    std::vector<std::string> files_names;
-    std::vector<int> open_files = {};
+    static std::vector<std::string> files_names;
+    static std::vector<int> open_files;
     myDIR() = default;
     myDIR(struct inode *inode, struct superblock *sb, struct inode *inodes)
     {
@@ -63,8 +63,7 @@ public:
         this->inode = inode;
         this->inode->type = FILE_TYPE_DIRECTORY;
         strcpy(this->inode->name, "root");
-        // TODO decide if this is the right way to do this
-        // this->inode.permission = PERMISSION_READ;
+        this->inode->permission = PERMISSION_READ;
         this->inode->used_size = 0;
         this->inode->size = 0;
         this->inode->first_block = -2;
@@ -99,7 +98,9 @@ int mymkfs();
 
 int myopen(const char *, int); // finish i think open a inode with flags
 int myclose(int);
-ssize_t myread(int, void *, size_t t);
+
+ssize_t myread(int, void *, int, int);
+
 ssize_t mywrite(int, const void *, size_t);
 off_t mylseek(int, off_t, int);
 myDIR *myopendir(const char *); // finish i think , open root directory
@@ -109,6 +110,3 @@ int myclosedir(myDIR *);
 extern struct superblock sb;
 extern struct inode *inodes;
 extern struct disk_block *dbs;
-
-
-

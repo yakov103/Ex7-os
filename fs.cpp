@@ -24,6 +24,8 @@ struct disk_block
 
 */
 
+std::vector<int> myDIR::open_files;
+
 struct superblock sb;
 struct inode *inodes;
 struct disk_block *dbs;
@@ -80,11 +82,6 @@ int find_empty_block()
 // initialize new filesystem
 void create_fs()
 {
-    // for (int i = 0; i < MAX_FILES; i++)
-    // {
-    //     myopenfile[i] = -1;
-    // }
-
     sb.num_inodes = 10;
     sb.num_blocks = 100;
     sb.size_blocks = sizeof(struct disk_block);
@@ -302,6 +299,7 @@ int myopen(const char *pathname, int flags)
         }
         else
         {
+            myDIR::open_files.push_back(file_num);
             return file_num;
         }
     }
@@ -316,12 +314,13 @@ int myopen(const char *pathname, int flags)
             inodes[in].type = FILE_TYPE_REGULAR;
             inodes[in].size = 0;
             dbs[inodes[in].first_block].next_block_num = -2;
+            myDIR::open_files.push_back(in);
         }
         else
         {
             // exists
             in = file_num;
-
+            myDIR::open_files.push_back(file_num);
         }
     }
 
@@ -351,8 +350,52 @@ myDIR *myopendir(const char *name)
     }
     else
     {
-        myopenfile[0] = 0;
+        myDIR::open_files.push_back(rootDIR->inode_num);
         return rootDIR;
     }
 
 } // myopendir
+
+int myclose(int myfd)
+{
+    // TODO check the quality of code
+    int i;
+    for (i = 0; i < (int)myDIR::open_files.size(); i++)
+    {
+        if (myDIR::open_files[i] == myfd)
+        {
+            myDIR::open_files.erase(myDIR::open_files.begin() + i);
+            return 0;
+        }
+    }
+    return -1;
+} // myclose
+
+ssize_t myread(int myfd, void *buf, int count ,int x)
+{
+
+    // check if myfd is opened
+    if (std::find(myDIR::open_files.begin(), myDIR::open_files.end(), myfd) != myDIR::open_files.end())
+    {
+        if (inodes[myfd].used_size <= (int)count)
+        {
+            count = inodes[myfd].used_size;
+        }
+
+        int data_block_num = inodes[myfd].first_block;
+        struct disk_block *first = &dbs[data_block_num];
+        int number_of_blocks_to_read = (int)count / BLOCKSIZE;
+        printf("\nnumber of blocks to read %d\n", number_of_blocks_to_read);
+        int block_number = data_block_num;
+        int index_to_read = 0;
+    }
+    else
+    {
+        printf("file not open\n");
+        return 0;
+    }
+    return 0;
+} // myread
+
+// ssize_t mywrite(int, const void *, size_t);
+// off_t mylseek(int, off_t, int);
