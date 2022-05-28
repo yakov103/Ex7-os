@@ -1,7 +1,8 @@
 CC=g++
-FLAGS=-std=c++2a -g -Wall
+FLAGS=-std=c++2a -g -Wall 
+# -Werror -Wextra 
 
-all:test run
+all:test 
 
 run:
 	./test 100

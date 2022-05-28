@@ -6,24 +6,24 @@
 int main(int argc, char *argv[])
 {
     // https://www.geeksforgeeks.org/command-line-arguments-in-c-cpp/
-    if (argc == 1)
-    {
-        printf("\nNo Extra Command Line Argument Passed Other Than Program Name");
-    }
-    if (argc >= 2)
-    {
-        if (std::stoi(argv[1]) >= MAXFILESYSTEMSIZE)
-        {
-            printf("\nERROR:The Number Passed Is Greater Than file system memory\n");
-            return 1;
-        }
-        // printf("\nNumber Of Arguments Passed: %d", argc);
-        // printf("\n----Following Are The Command Line Arguments Passed----");
-        // for (counter = 0; counter < argc; counter++)
-        // {
-        //     printf("\nargv[%d]: %s", counter, argv[counter]);
-        // }
-    }
+    // uncomment this    if (argc == 1)
+    // uncomment this    {
+    // uncomment this        printf("\nNo Extra Command Line Argument Passed Other Than Program Name");
+    // uncomment this    }
+    // uncomment this    if (argc >= 2)
+    // uncomment this    {
+    // uncomment this        if (std::stoi(argv[1]) >= MAXFILESYSTEMSIZE)
+    // uncomment this        {
+    // uncomment this            printf("\nERROR:The Number Passed Is Greater Than file system memory\n");
+    // uncomment this            return 1;
+    // uncomment this        }
+    // printf("\nNumber Of Arguments Passed: %d", argc);
+    // printf("\n----Following Are The Command Line Arguments Passed----");
+    // for (counter = 0; counter < argc; counter++)
+    // {
+    //     printf("\nargv[%d]: %s", counter, argv[counter]);
+    // }
+    // uncomment this    }
 
     /**
      * @brief first check this
@@ -103,12 +103,15 @@ int main(int argc, char *argv[])
     //     PERMISSION_UNSET // 3
     // };
     const char *file_name = "first";
-    int file_num = myopen(file_name, PERMISSION_WRITE);
+    int file_num = myopen(file_name, PERMISSION_READ_WRITE);
     printf("file num is %d\n", file_num);
-    char buffer[5000];
-    strcpy(buffer, "yakov is good");
-    mywrite(file_num, buffer, strlen(buffer));
-    myread(file_num, (void *)buffer, 1536);
+
+    std::string data = "yakov is good ";
+
+    mywrite(file_num, (void *)data.c_str(), strlen(data.c_str()));
+    char buffer[100];
+    myread(file_num, buffer, 10);
+    printf("%s\n", buffer);
 
     // char data[8] = "dolev";
     // https://stackoverflow.com/questions/2329842/checking-for-success-of-fwrite-in-c-perror

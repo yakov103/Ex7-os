@@ -27,7 +27,8 @@ enum Permission
     PERMISSION_READ,    // 0
     PERMISSION_WRITE,   // 1
     PERMISSION_EXECUTE, // 2
-    PERMISSION_UNSET    // 3
+    PERMISSION_UNSET,    // 3
+    PERMISSION_READ_WRITE    // 4
 };
 
 struct superblock
@@ -87,19 +88,15 @@ void sync_fs();   // write the file system
 // return filenumber
 int allocate_file(char name[8]);
 void set_filesize(int filenum, int size);
-// ssize_t mywrite(int myfd, const void *buf, size_t count);
-__ssize_t mywrite(int myfd, const void *buf, size_t count);
+
+
 
 void print_fs(); // print out info avbout the file system
-
 int mymkfs();
-
 int myopen(const char *, int); // finish i think open a inode with flags
 int myclose(int);
-
-ssize_t myread(int, void *, size_t);
-
-ssize_t mywrite(int, const void *, size_t);
+ssize_t myread(int, void *, size_t);// finish i think
+ssize_t mywrite(int, void *, size_t);// finish i think
 off_t mylseek(int, off_t, int);
 myDIR *myopendir(const char *); // finish i think , open root directory
 struct mydirent *myreaddir(myDIR *);
