@@ -42,6 +42,7 @@ struct inode
 {
     enum FileType type = FILE_TYPE_UNSET;
     enum Permission permission = PERMISSION_UNSET;
+    int current_offset = 0;
     int used_size = 0;
     int size;
     int first_block;
@@ -92,13 +93,15 @@ void set_filesize(int filenum, int size);
 
 
 void print_fs(); // print out info avbout the file system
-int mymkfs();
+int mymkfs(); // finish i think
 int myopen(const char *, int); // finish i think open a inode with flags
-int myclose(int);
+int myclose(int); // finish i think
 ssize_t myread(int, void *, size_t);// finish i think
 ssize_t mywrite(int, void *, size_t);// finish i think
-off_t mylseek(int, off_t, int);
+off_t mylseek(int, off_t, int); // finish i think 
 myDIR *myopendir(const char *); // finish i think , open root directory
+
+
 struct mydirent *myreaddir(myDIR *);
 int myclosedir(myDIR *);
 
