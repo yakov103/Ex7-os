@@ -235,30 +235,6 @@ void set_filesize(int filenum, int size)
 
 } // set_filesize
 
-// __ssize_t mywrite(int myfd, const void *buf, size_t count)
-// {
-//     // calculate which block
-//     // int relative_block = pos / BLOCKSIZE;
-
-//     // find th eblock number
-//     int bn = get_block_num(myfd, 0);
-//     // calculate the offset in the block
-//     // int offset = pos % BLOCKSIZE;
-//     // write the data
-//     for (size_t i = 0; i < count; i++)
-//     {
-//         /* code */
-//         dbs[bn].data[i] = ((char *)buf)[i];
-//     }
-
-//     inodes[myfd].size = count;
-
-//     // dbs[bn].data[offset] = (*data);
-
-//     return count;
-
-// } // mywrite
-
 int mymkfs()
 {
 
