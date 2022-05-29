@@ -35,7 +35,7 @@ public:
     char name[8];
     enum FileType type;
     simple_file() = default;
-    simple_file(int file_num, int current_offset, int used_size, int size, int first_block, char name[8], enum FileType type, enum myFILEPERMITION permition)
+    simple_file(int file_num, int current_offset, int used_size, int size, int first_block, char name[8], enum FileType type, enum Permission permition)
     {
         this->file_num = file_num;
         this->current_offset = current_offset;
@@ -48,12 +48,13 @@ public:
     }
 };
 
+extern vector<string> myFILEs_open;
+extern vector<simple_file *> myFILEs;
+
 class myFILE
 {
     // constructor
 public:
-    static vector<string> myFILEs_open;
-    static vector<simple_file *> myFILEs;
     simple_file *file;
     char file_buffer[5120];
     myFILE();
@@ -66,13 +67,13 @@ public:
     }
 };
 
-myFILE *myfopen(const char *pathname, const char *mode);
-int myfclose(myFILE *stream);
-size_t myfread(void *ptr, size_t size, size_t nmemb, myFILE *stream);
-size_t myfwrite(const void *ptr, size_t size, size_t nmemb, myFILE *stream);
-int myfseek(myFILE *stream, long offset, int whence);
-int myfscanf(myFILE *stream, const char *format, ...);
-int myfprintf(myFILE *stream, const char *format, ...);
+myFILE *myfopen(const char *pathname, const char *mode);                     // finished
+int myfclose(myFILE *stream);                                                // finished
+size_t myfread(void *ptr, size_t size, size_t nmemb, myFILE *stream);        // finished
+size_t myfwrite(const void *ptr, size_t size, size_t nmemb, myFILE *stream); // finished
+int myfseek(myFILE *stream, long offset, int whence);                        // finished
+int myfscanf(myFILE *stream, const char *format, ...);                       // finished
+int myfprintf(myFILE *stream, const char *format, ...);                      // finished
 
 // myprintf();
 char *_strrev(char *str);

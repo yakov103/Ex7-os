@@ -1,7 +1,11 @@
 #include "myFILE.hpp"
 
+vector<string> myFILEs_open;
+vector<simple_file *> myFILEs;
+
 myFILE::myFILE(/* args */)
 {
+    this->file = new simple_file();
     this->file->permition = PERMISSION_UNSET;
     this->file->file_num = 0;
     this->file->current_offset = 0;
@@ -22,6 +26,10 @@ myFILE *myfopen(const char *pathname, const char *mode)
     if (strcmp(mode, "r"))
     {
         int file_number = myopen(pathname, PERMISSION_READ);
+        if (file_number == -1)
+        {
+            return NULL;
+        }
         myfile_ptr->file->permition = PERMISSION_READ;
         myfile_ptr->file->file_num = file_number;
         myfile_ptr->file->current_offset = 0;
@@ -30,13 +38,17 @@ myFILE *myfopen(const char *pathname, const char *mode)
         myfile_ptr->file->first_block = inodes[file_number].first_block;
         strcpy(myfile_ptr->file->name, inodes[file_number].name);
         myfile_ptr->file->type = inodes[file_number].type;
-        myFILE::myFILEs_open.push_back(inodes[file_number].name);
+        myFILEs_open.push_back(inodes[file_number].name);
         myread(myfile_ptr->file->file_num, (void *)myfile_ptr->file_buffer, myfile_ptr->file->used_size);
         return myfile_ptr;
     }
     else if (strcmp(mode, "w"))
     {
         int file_number = myopen(pathname, PERMISSION_WRITE);
+        if (file_number == -1)
+        {
+            return NULL;
+        }
         myfile_ptr->file->permition = PERMISSION_WRITE;
         myfile_ptr->file->file_num = file_number;
         myfile_ptr->file->current_offset = 0;
@@ -45,12 +57,16 @@ myFILE *myfopen(const char *pathname, const char *mode)
         myfile_ptr->file->first_block = inodes[file_number].first_block;
         strcpy(myfile_ptr->file->name, inodes[file_number].name);
         myfile_ptr->file->type = inodes[file_number].type;
-        myFILE::myFILEs_open.push_back(inodes[file_number].name);
+        myFILEs_open.push_back(inodes[file_number].name);
         myread(myfile_ptr->file->file_num, (void *)myfile_ptr->file_buffer, myfile_ptr->file->used_size);
     }
     else if (strcmp(mode, "a"))
     {
         int file_number = myopen(pathname, PERMISSION_APPEND);
+        if (file_number == -1)
+        {
+            return NULL;
+        }
         myfile_ptr->file->permition = PERMISSION_APPEND;
         myfile_ptr->file->current_offset = myfile_ptr->file->used_size;
         myfile_ptr->file->file_num = file_number;
@@ -59,12 +75,16 @@ myFILE *myfopen(const char *pathname, const char *mode)
         myfile_ptr->file->first_block = inodes[file_number].first_block;
         strcpy(myfile_ptr->file->name, inodes[file_number].name);
         myfile_ptr->file->type = inodes[file_number].type;
-        myFILE::myFILEs_open.push_back(inodes[file_number].name);
+        myFILEs_open.push_back(inodes[file_number].name);
         myread(myfile_ptr->file->file_num, (void *)myfile_ptr->file_buffer, myfile_ptr->file->used_size);
     }
     else if (strcmp(mode, "r+"))
     {
         int file_number = myopen(pathname, PERMISSION_READ_WRITE);
+        if (file_number == -1)
+        {
+            return NULL;
+        }
         myfile_ptr->file->permition = PERMISSION_READ_WRITE;
         myfile_ptr->file->file_num = file_number;
         myfile_ptr->file->current_offset = 0;
@@ -73,7 +93,7 @@ myFILE *myfopen(const char *pathname, const char *mode)
         myfile_ptr->file->first_block = inodes[file_number].first_block;
         strcpy(myfile_ptr->file->name, inodes[file_number].name);
         myfile_ptr->file->type = inodes[file_number].type;
-        myFILE::myFILEs_open.push_back(inodes[file_number].name);
+        myFILEs_open.push_back(inodes[file_number].name);
         myread(myfile_ptr->file->file_num, (void *)myfile_ptr->file_buffer, myfile_ptr->file->used_size);
     }
     else
@@ -81,6 +101,208 @@ myFILE *myfopen(const char *pathname, const char *mode)
         myfile_ptr->file->permition = PERMISSION_UNSET;
     }
     return myfile_ptr;
+}
+
+int myfclose(myFILE *stream)
+{
+    int file_number = stream->file->file_num;
+    myFILEs_open.erase(std::remove(myFILEs_open.begin(), myFILEs_open.end(), inodes[file_number].name), myFILEs_open.end());
+    myclose(file_number);
+    return file_number;
+}
+
+size_t myfread(void *ptr, size_t size, size_t nmemb, myFILE *stream)
+{
+    // check if the file is opened in write mode
+    if (stream->file->permition != PERMISSION_READ && stream->file->permition != PERMISSION_READ_WRITE && stream->file->permition != PERMISSION_APPEND)
+    {
+        return 0;
+    }
+
+    // check if the file is in filesopen
+    if (std::find(myFILEs_open.begin(), myFILEs_open.end(), inodes[stream->file->file_num].name) == myFILEs_open.end())
+    {
+        return 0;
+    }
+
+    int current_offset = stream->file->current_offset;
+    int used_size = stream->file->used_size;
+    int size_to_read = size * nmemb;
+    int size_to_read_from_buffer = 0;
+    if (current_offset + size_to_read > used_size)
+    {
+        size_to_read_from_buffer = used_size - current_offset;
+    }
+    else
+    {
+        size_to_read_from_buffer = size_to_read;
+    }
+    memcpy(ptr, stream->file_buffer + current_offset, size_to_read_from_buffer);
+    stream->file->current_offset += size_to_read_from_buffer;
+    return size_to_read_from_buffer;
+}
+
+size_t myfwrite(const void *ptr, size_t size, size_t nmemb, myFILE *stream)
+{
+    // check if the file is opened in write mode
+    if (stream->file->permition != PERMISSION_WRITE && stream->file->permition != PERMISSION_READ_WRITE && stream->file->permition != PERMISSION_APPEND)
+    {
+        return 0;
+    }
+
+    // check if the file is in filesopen
+    if (std::find(myFILEs_open.begin(), myFILEs_open.end(), inodes[stream->file->file_num].name) == myFILEs_open.end())
+    {
+        return 0;
+    }
+
+    int current_offset = stream->file->current_offset;
+    int used_size = stream->file->used_size;
+    int size_to_write = size * nmemb;
+    int size_to_write_from_buffer = 0;
+    if (current_offset + size_to_write > used_size)
+    {
+        size_to_write_from_buffer = used_size - current_offset;
+    }
+    else
+    {
+        size_to_write_from_buffer = size_to_write;
+    }
+    memcpy(stream->file_buffer + current_offset, ptr, size_to_write_from_buffer);
+    stream->file->current_offset += size_to_write_from_buffer;
+    return size_to_write_from_buffer;
+}
+
+int myfseek(myFILE *stream, long offset, int whence)
+{
+
+    // check if the file is opened in write mode
+    if (stream->file->permition != PERMISSION_READ && stream->file->permition != PERMISSION_READ_WRITE && stream->file->permition != PERMISSION_APPEND)
+    {
+        return -1;
+    }
+
+    // check if the file is in filesopen
+    if (std::find(myFILEs_open.begin(), myFILEs_open.end(), inodes[stream->file->file_num].name) == myFILEs_open.end())
+    {
+        return -1;
+    }
+
+    int current_offset = stream->file->current_offset;
+    int used_size = stream->file->used_size;
+    int size_to_seek = offset;
+    int size_to_seek_from_buffer = 0;
+    if (whence == SEEK_SET)
+    {
+        if (size_to_seek > used_size)
+        {
+            return -1;
+        }
+        else
+        {
+            size_to_seek_from_buffer = size_to_seek;
+        }
+    }
+    else if (whence == SEEK_CUR)
+    {
+        if (current_offset + size_to_seek > used_size)
+        {
+            return -1;
+        }
+        else
+        {
+            size_to_seek_from_buffer = current_offset + size_to_seek;
+        }
+    }
+    else if (whence == SEEK_END)
+    {
+        if (used_size + size_to_seek > used_size)
+        {
+            return -1;
+        }
+        else
+        {
+            size_to_seek_from_buffer = used_size + size_to_seek;
+        }
+    }
+    else
+    {
+        return -1;
+    }
+    stream->file->current_offset = size_to_seek_from_buffer;
+    return 0;
+}
+
+int myfscanf(myFILE *stream, const char *format, ...)
+{
+    // check if the file is opened in write mode
+    if (stream->file->permition != PERMISSION_READ && stream->file->permition != PERMISSION_READ_WRITE && stream->file->permition != PERMISSION_APPEND)
+    {
+        return -1;
+    }
+
+    // check if the file is in filesopen
+    if (std::find(myFILEs_open.begin(), myFILEs_open.end(), inodes[stream->file->file_num].name) == myFILEs_open.end())
+    {
+        return -1;
+    }
+
+    int current_offset = stream->file->current_offset;
+    int used_size = stream->file->used_size;
+    int size_to_scan = used_size - current_offset;
+    int size_to_scan_from_buffer = 0;
+    if (size_to_scan > 0)
+    {
+        size_to_scan_from_buffer = size_to_scan;
+    }
+    else
+    {
+        return -1;
+    }
+    char *buffer = (char *)malloc(size_to_scan_from_buffer);
+    memcpy(buffer, stream->file_buffer + current_offset, size_to_scan_from_buffer);
+    va_list args;
+    va_start(args, format);
+    int result = vsscanf(buffer, format, args);
+    va_end(args);
+    free(buffer);
+    return result;
+}
+
+int myfprintf(myFILE *stream, const char *format, ...)
+{
+    // check if the file is opened in write mode
+    if (stream->file->permition != PERMISSION_WRITE && stream->file->permition != PERMISSION_READ_WRITE && stream->file->permition != PERMISSION_APPEND)
+    {
+        return -1;
+    }
+
+    // check if the file is in filesopen
+    if (std::find(myFILEs_open.begin(), myFILEs_open.end(), inodes[stream->file->file_num].name) == myFILEs_open.end())
+    {
+        return -1;
+    }
+
+    int current_offset = stream->file->current_offset;
+    int used_size = stream->file->used_size;
+    int size_to_print = used_size - current_offset;
+    int size_to_print_from_buffer = 0;
+    if (size_to_print > 0)
+    {
+        size_to_print_from_buffer = size_to_print;
+    }
+    else
+    {
+        return -1;
+    }
+    char *buffer = (char *)malloc(size_to_print_from_buffer);
+    memcpy(buffer, stream->file_buffer + current_offset, size_to_print_from_buffer);
+    va_list args;
+    va_start(args, format);
+    int result = vprintf(format, args);
+    va_end(args);
+    free(buffer);
+    return result;
 }
 
 int myprint(char *str, ...)
