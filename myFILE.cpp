@@ -17,6 +17,7 @@ myFILE::~myFILE(){
 myFILE *myfopen(const char *pathname, const char *mode)
 {
     myFILE* myfile_ptr = new myFILE();
+    
     // myFILE *myFILE = new myFILE();
     // myFILE->myFILE_mode = UNSET;
     // myFILE->myFiles_open.push_back(pathname);
