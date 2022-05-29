@@ -1,5 +1,21 @@
 #include "myFILE.hpp"
 
+myFILE::myFILE(/* args */){
+    this->myFILE_mode= UNSET;
+};
+myFILE::~myFILE(){
+
+};
+
+myFILE *myfopen(const char *pathname, const char *mode)
+{
+    myfile* myfile_ptr = new myfile();
+    // myFILE *myFILE = new myFILE();
+    // myFILE->myFILE_mode = UNSET;
+    // myFILE->myFiles_open.push_back(pathname);
+    // return myFILE;
+}
+
 int myprint(char *str, ...)
 {
     va_list vl;
@@ -124,7 +140,7 @@ int myscanf(char *str, ...)
 {
     va_list vl;
     int i = 0, j = 0, ret = 0;
-    char buff[100] = {0}, tmp[20], c;
+    char buff[100] = {0}, c;
     char *out_loc;
     while (c != '\n')
     {

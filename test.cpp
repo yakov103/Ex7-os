@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "fs.hpp"
+#include "myFILE.hpp"
 #include <string.h>
 #include <string>
 

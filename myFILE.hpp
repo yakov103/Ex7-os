@@ -1,22 +1,39 @@
-// #pragma once
+#ifndef MYFILE_HPP
+#define MYFILE_HPP
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-#include <string>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-
+#include <vector>
+#include <string>
+#include "fs.hpp"
 // https://www.equestionanswers.com/c/c-printf-scanf-working-principle.php
+
+using namespace std;
 
 enum myFILEPERMITION
 {
+    UNSET = 0,
     READ = 1,
     WRITE = 2,
     READ_WRITE = 3,
     APPEND = 4,
     EXECUTE = 5
+
+};
+
+class myfile
+{
+    // constructor
+public:
+    int a;
+    myfile()
+    {
+        this->a = 5;
+    }
 };
 
 class myFILE
@@ -24,17 +41,19 @@ class myFILE
 private:
     /* data */
 public:
+    static vector<string> myFiles_open;
+    myFILEPERMITION myFILE_mode;
     myFILE(/* args */);
     ~myFILE();
+
+    myFILE *myfopen(const char *pathname, const char *mode);
+    int myfclose(myFILE *stream);
+    size_t myfread(void *ptr, size_t size, size_t nmemb, myFILE *stream);
+    size_t myfwrite(const void *ptr, size_t size, size_t nmemb, myFILE *stream);
+    int myfseek(myFILE *stream, long offset, int whence);
+    int myfscanf(myFILE *stream, const char *format, ...);
+    int myfprintf(myFILE *stream, const char *format, ...);
 };
-
-myFILE::myFILE(/* args */)
-{
-}
-
-myFILE::~myFILE()
-{
-}
 
 // myprintf();
 char *_strrev(char *str);
@@ -45,7 +64,6 @@ int myprint(char *str, ...);
 // myscanf();
 int myscanf(char *str, ...);
 // myscanf();
-
 
 // int main(int argc, char *argv[])
 // {
@@ -70,3 +88,5 @@ int myscanf(char *str, ...);
 //     printf("printf returns %d bytes\n", ret);
 //     return 0;
 // }
+
+#endif
