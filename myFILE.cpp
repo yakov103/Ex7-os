@@ -1,7 +1,8 @@
 #include "myFILE.hpp"
 
-myFILE::myFILE(/* args */){
-    this->file->permition = UNSET;
+myFILE::myFILE(/* args */)
+{
+    this->file->permition = PERMISSION_UNSET;
     this->file->file_num = 0;
     this->file->current_offset = 0;
     this->file->used_size = 0;
@@ -16,12 +17,70 @@ myFILE::~myFILE(){
 
 myFILE *myfopen(const char *pathname, const char *mode)
 {
-    myFILE* myfile_ptr = new myFILE();
-    
-    // myFILE *myFILE = new myFILE();
-    // myFILE->myFILE_mode = UNSET;
-    // myFILE->myFiles_open.push_back(pathname);
-    // return myFILE;
+
+    myFILE *myfile_ptr = new myFILE();
+    if (strcmp(mode, "r"))
+    {
+        int file_number = myopen(pathname, PERMISSION_READ);
+        myfile_ptr->file->permition = PERMISSION_READ;
+        myfile_ptr->file->file_num = file_number;
+        myfile_ptr->file->current_offset = 0;
+        myfile_ptr->file->used_size = inodes[file_number].used_size;
+        myfile_ptr->file->size = inodes[file_number].size;
+        myfile_ptr->file->first_block = inodes[file_number].first_block;
+        strcpy(myfile_ptr->file->name, inodes[file_number].name);
+        myfile_ptr->file->type = inodes[file_number].type;
+        myFILE::myFILEs_open.push_back(inodes[file_number].name);
+        myread(myfile_ptr->file->file_num, (void *)myfile_ptr->file_buffer, myfile_ptr->file->used_size);
+        return myfile_ptr;
+    }
+    else if (strcmp(mode, "w"))
+    {
+        int file_number = myopen(pathname, PERMISSION_WRITE);
+        myfile_ptr->file->permition = PERMISSION_WRITE;
+        myfile_ptr->file->file_num = file_number;
+        myfile_ptr->file->current_offset = 0;
+        myfile_ptr->file->used_size = inodes[file_number].used_size;
+        myfile_ptr->file->size = inodes[file_number].size;
+        myfile_ptr->file->first_block = inodes[file_number].first_block;
+        strcpy(myfile_ptr->file->name, inodes[file_number].name);
+        myfile_ptr->file->type = inodes[file_number].type;
+        myFILE::myFILEs_open.push_back(inodes[file_number].name);
+        myread(myfile_ptr->file->file_num, (void *)myfile_ptr->file_buffer, myfile_ptr->file->used_size);
+    }
+    else if (strcmp(mode, "a"))
+    {
+        int file_number = myopen(pathname, PERMISSION_APPEND);
+        myfile_ptr->file->permition = PERMISSION_APPEND;
+        myfile_ptr->file->current_offset = myfile_ptr->file->used_size;
+        myfile_ptr->file->file_num = file_number;
+        myfile_ptr->file->used_size = inodes[file_number].used_size;
+        myfile_ptr->file->size = inodes[file_number].size;
+        myfile_ptr->file->first_block = inodes[file_number].first_block;
+        strcpy(myfile_ptr->file->name, inodes[file_number].name);
+        myfile_ptr->file->type = inodes[file_number].type;
+        myFILE::myFILEs_open.push_back(inodes[file_number].name);
+        myread(myfile_ptr->file->file_num, (void *)myfile_ptr->file_buffer, myfile_ptr->file->used_size);
+    }
+    else if (strcmp(mode, "r+"))
+    {
+        int file_number = myopen(pathname, PERMISSION_READ_WRITE);
+        myfile_ptr->file->permition = PERMISSION_READ_WRITE;
+        myfile_ptr->file->file_num = file_number;
+        myfile_ptr->file->current_offset = 0;
+        myfile_ptr->file->used_size = inodes[file_number].used_size;
+        myfile_ptr->file->size = inodes[file_number].size;
+        myfile_ptr->file->first_block = inodes[file_number].first_block;
+        strcpy(myfile_ptr->file->name, inodes[file_number].name);
+        myfile_ptr->file->type = inodes[file_number].type;
+        myFILE::myFILEs_open.push_back(inodes[file_number].name);
+        myread(myfile_ptr->file->file_num, (void *)myfile_ptr->file_buffer, myfile_ptr->file->used_size);
+    }
+    else
+    {
+        myfile_ptr->file->permition = PERMISSION_UNSET;
+    }
+    return myfile_ptr;
 }
 
 int myprint(char *str, ...)

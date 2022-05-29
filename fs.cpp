@@ -32,7 +32,6 @@ struct disk_block *dbs;
 struct mydirent *file_entry;
 int *current_entry = (int *)malloc(sizeof(int));
 
-
 int find_empty_inode()
 {
     int i;
@@ -303,6 +302,23 @@ int myopen(const char *pathname, int flags)
         {
             // exists
             in = file_num;
+            myDIR::open_files.push_back(file_num);
+        }
+    }
+    if (flags == PERMISSION_APPEND)
+    {
+        // so its append
+        if (file_num == -1)
+        {
+            // error no such file
+            printf("file does not exist\n");
+            return -1;
+        }
+        else
+        {
+            // exists
+            in = file_num;
+            inodes[in].current_offset = inodes[in].used_size;
             myDIR::open_files.push_back(file_num);
         }
     }

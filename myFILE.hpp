@@ -14,21 +14,19 @@
 
 using namespace std;
 
-enum myFILEPERMITION
-{
-    UNSET = 0,
-    READ = 1,
-    WRITE = 2,
-    READ_WRITE = 3,
-    APPEND = 4,
-    EXECUTE = 5
-
-};
+// enum Permission
+// {
+//     PERMISSION_READ,      // 0
+//     PERMISSION_WRITE,     // 1
+//     PERMISSION_EXECUTE,   // 2
+//     PERMISSION_UNSET,     // 3
+//     PERMISSION_READ_WRITE // 4
+// };
 
 class simple_file
 {
 public:
-    enum myFILEPERMITION permition;
+    enum Permission permition;
     int file_num;
     int current_offset;
     int used_size;
@@ -36,6 +34,7 @@ public:
     int first_block;
     char name[8];
     enum FileType type;
+    simple_file() = default;
     simple_file(int file_num, int current_offset, int used_size, int size, int first_block, char name[8], enum FileType type, enum myFILEPERMITION permition)
     {
         this->file_num = file_num;
@@ -56,6 +55,7 @@ public:
     static vector<string> myFILEs_open;
     static vector<simple_file *> myFILEs;
     simple_file *file;
+    char file_buffer[5120];
     myFILE();
     ~myFILE();
     myFILE(simple_file *file)
@@ -64,15 +64,15 @@ public:
         // myFILEs.push_back(simple_file(file_num, curr_offset, used_size, size, first_block, name, type, permition));
         myFILEs_open.push_back(file->name);
     }
-
-    myFILE *myfopen(const char *pathname, const char *mode);
-    int myfclose(myFILE *stream);
-    size_t myfread(void *ptr, size_t size, size_t nmemb, myFILE *stream);
-    size_t myfwrite(const void *ptr, size_t size, size_t nmemb, myFILE *stream);
-    int myfseek(myFILE *stream, long offset, int whence);
-    int myfscanf(myFILE *stream, const char *format, ...);
-    int myfprintf(myFILE *stream, const char *format, ...);
 };
+
+myFILE *myfopen(const char *pathname, const char *mode);
+int myfclose(myFILE *stream);
+size_t myfread(void *ptr, size_t size, size_t nmemb, myFILE *stream);
+size_t myfwrite(const void *ptr, size_t size, size_t nmemb, myFILE *stream);
+int myfseek(myFILE *stream, long offset, int whence);
+int myfscanf(myFILE *stream, const char *format, ...);
+int myfprintf(myFILE *stream, const char *format, ...);
 
 // myprintf();
 char *_strrev(char *str);

@@ -28,7 +28,8 @@ enum Permission
     PERMISSION_WRITE,     // 1
     PERMISSION_EXECUTE,   // 2
     PERMISSION_UNSET,     // 3
-    PERMISSION_READ_WRITE // 4
+    PERMISSION_READ_WRITE, // 4
+    PERMISSION_APPEND // 5
 };
 
 struct superblock
