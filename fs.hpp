@@ -24,11 +24,11 @@ enum FileType
 
 enum Permission
 {
-    PERMISSION_READ,    // 0
-    PERMISSION_WRITE,   // 1
-    PERMISSION_EXECUTE, // 2
-    PERMISSION_UNSET,    // 3
-    PERMISSION_READ_WRITE    // 4
+    PERMISSION_READ,      // 0
+    PERMISSION_WRITE,     // 1
+    PERMISSION_EXECUTE,   // 2
+    PERMISSION_UNSET,     // 3
+    PERMISSION_READ_WRITE // 4
 };
 
 struct superblock
@@ -36,6 +36,12 @@ struct superblock
     int num_inodes;
     int num_blocks;
     int size_blocks;
+};
+
+struct mydirent
+{
+    char d_name[256];
+    int inode_num;
 };
 
 struct inode
@@ -49,6 +55,10 @@ struct inode
     char name[8];
 };
 
+void create_fs(); // initialize new filesystem
+void mount_fs();  // load a file system
+void sync_fs();   // write the file system
+
 class myDIR
 {
 public:
@@ -56,6 +66,7 @@ public:
     struct inode *inode;
     static std::vector<std::string> files_names;
     static std::vector<int> open_files;
+
     myDIR() = default;
     myDIR(struct inode *inode, struct superblock *sb, struct inode *inodes)
     {
@@ -74,6 +85,10 @@ public:
             std::cout << inodes[i].name << std::endl;
         }
     }
+
+    ~myDIR()
+    {
+    }
 };
 
 struct disk_block
@@ -82,25 +97,18 @@ struct disk_block
     char data[BLOCKSIZE];
 };
 
-void create_fs(); // initialize new filesystem
-void mount_fs();  // load a file system
-void sync_fs();   // write the file system
-
 // return filenumber
 int allocate_file(char name[8]);
 void set_filesize(int filenum, int size);
 
-
-
-void print_fs(); // print out info avbout the file system
-int mymkfs(); // finish i think
-int myopen(const char *, int); // finish i think open a inode with flags
-int myclose(int); // finish i think
-ssize_t myread(int, void *, size_t);// finish i think
-ssize_t mywrite(int, void *, size_t);// finish i think
-off_t mylseek(int, off_t, int); // finish i think 
-myDIR *myopendir(const char *); // finish i think , open root directory
-
+void print_fs();                      // print out info avbout the file system
+int mymkfs();                         // finish i think
+int myopen(const char *, int);        // finish i think open a inode with flags
+int myclose(int);                     // finish i think
+ssize_t myread(int, void *, size_t);  // finish i think
+ssize_t mywrite(int, void *, size_t); // finish i think
+off_t mylseek(int, off_t, int);       // finish i think
+myDIR *myopendir(const char *);       // finish i think , open root directory
 
 struct mydirent *myreaddir(myDIR *);
 int myclosedir(myDIR *);
@@ -108,5 +116,7 @@ int myclosedir(myDIR *);
 extern struct superblock sb;
 extern struct inode *inodes;
 extern struct disk_block *dbs;
+extern struct mydirent *file_entry;
+extern int *current_entry;
 
 #endif

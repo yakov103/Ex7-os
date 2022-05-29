@@ -29,6 +29,9 @@ std::vector<int> myDIR::open_files;
 struct superblock sb;
 struct inode *inodes;
 struct disk_block *dbs;
+struct mydirent *file_entry;
+int *current_entry = (int *)malloc(sizeof(int));
+
 
 int find_empty_inode()
 {
@@ -132,7 +135,8 @@ void mount_fs()
 
     fread(inodes, sizeof(struct inode), sb.num_inodes, file);
     fread(dbs, sizeof(struct disk_block), sb.num_blocks, file);
-
+    file_entry = (struct mydirent *)malloc(sizeof(struct mydirent));
+    current_entry = (int *)malloc(sizeof(int));
     fclose(file);
 } // mount_fs()
 
@@ -263,6 +267,8 @@ int mymkfs()
     char param[8] = "root";
     int directory = allocate_file(param);
     inodes[directory].type = FILE_TYPE_DIRECTORY;
+    *current_entry = 1;
+    file_entry = (struct mydirent *)malloc(sizeof(struct mydirent));
     return directory;
 
 } // mymkfs
@@ -351,7 +357,6 @@ myDIR *myopendir(const char *name)
     }
     else
     {
-        myDIR::open_files.push_back(rootDIR->inode_num);
         return rootDIR;
     }
 
@@ -413,7 +418,7 @@ ssize_t myread(int myfd, void *buff, size_t count)
         size_t iter_number = 0;
         while (iter_number < count)
         {
-            data[index_to_read] = dbs[block_number].data[index_to_read];
+            data[iter_number] = dbs[block_number].data[index_to_read];
             index_to_read++;
             if (index_to_read % BLOCKSIZE == 0)
             {
@@ -555,3 +560,39 @@ off_t mylseek(int fd, off_t offset, int whence)
     return -1;
 
 }; // mylseek
+
+struct mydirent *myreaddir(myDIR *dir)
+{
+    printf("myreaddir()\n");
+
+    while (*current_entry < 10)
+    {
+
+        if (inodes[*current_entry].type == FILE_TYPE_DIRECTORY)
+        {
+            printf("directory\n");
+            current_entry++;
+            continue;
+        }
+        if (inodes[*current_entry].size >= 0)
+        {
+            file_entry->inode_num = *current_entry;
+            strcpy(file_entry->d_name, inodes[*current_entry].name);
+            (*current_entry)++;
+            return file_entry;
+        }
+        *current_entry = 1;
+        return NULL;
+    }
+
+    return file_entry;
+}; // myreaddir
+
+int myclosedir(myDIR *dir)
+{
+    // sync the data to the file system
+    sync_fs();
+    delete dir;
+    printf("myclosedir()\n");
+    return 0;
+}; // myclosedir

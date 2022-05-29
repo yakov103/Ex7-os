@@ -109,9 +109,37 @@ int main(int argc, char *argv[])
     std::string data = "yakov is good ";
 
     mywrite(file_num, (void *)data.c_str(), strlen(data.c_str()));
+    mylseek(file_num, 6, SEEK_SET);
     char buffer[100];
-    myread(file_num, buffer, 10);
+    myread(file_num, buffer, 7);
     printf("%s\n", buffer);
+    myclose(file_num);
+
+    const char *file_name2 = "second";
+    int file_num2 = myopen(file_name2, PERMISSION_READ_WRITE);
+    printf("file num is %d\n", file_num2);
+
+    std::string data2 = "dolev dublon king ";
+
+    mywrite(file_num2, (void *)data2.c_str(), strlen(data2.c_str()));
+    mylseek(file_num2, 6, SEEK_SET);
+    char buffer2[100];
+    myread(file_num2, buffer2, 7);
+    printf("%s\n", buffer2);
+    myclose(file_num2);
+
+    struct mydirent *directory_entry;
+
+    if (root == NULL)
+    {
+        printf("Error! Unable to open directory.\n");
+        exit(1);
+    }
+    while ((directory_entry = myreaddir(root)) != NULL)
+    {
+        printf(">> %s\n", directory_entry->d_name);
+    }
+    myclosedir(root);
 
     // char data[8] = "dolev";
     // https://stackoverflow.com/questions/2329842/checking-for-success-of-fwrite-in-c-perror
