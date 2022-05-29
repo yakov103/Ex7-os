@@ -25,26 +25,45 @@ enum myFILEPERMITION
 
 };
 
-class myfile
+class simple_file
 {
-    // constructor
 public:
-    int a;
-    myfile()
+    enum myFILEPERMITION permition;
+    int file_num;
+    int current_offset;
+    int used_size;
+    int size;
+    int first_block;
+    char name[8];
+    enum FileType type;
+    simple_file(int file_num, int current_offset, int used_size, int size, int first_block, char name[8], enum FileType type, enum myFILEPERMITION permition)
     {
-        this->a = 5;
+        this->file_num = file_num;
+        this->current_offset = current_offset;
+        this->used_size = used_size;
+        this->size = size;
+        this->first_block = first_block;
+        strcpy(this->name, name);
+        this->type = type;
+        this->permition = permition;
     }
 };
 
 class myFILE
 {
-private:
-    /* data */
+    // constructor
 public:
-    static vector<string> myFiles_open;
-    myFILEPERMITION myFILE_mode;
-    myFILE(/* args */);
+    static vector<string> myFILEs_open;
+    static vector<simple_file *> myFILEs;
+    simple_file *file;
+    myFILE();
     ~myFILE();
+    myFILE(simple_file *file)
+    {
+        myFILEs.push_back(file);
+        // myFILEs.push_back(simple_file(file_num, curr_offset, used_size, size, first_block, name, type, permition));
+        myFILEs_open.push_back(file->name);
+    }
 
     myFILE *myfopen(const char *pathname, const char *mode);
     int myfclose(myFILE *stream);

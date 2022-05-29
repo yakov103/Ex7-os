@@ -1,7 +1,14 @@
 #include "myFILE.hpp"
 
 myFILE::myFILE(/* args */){
-    this->myFILE_mode= UNSET;
+    this->file->permition = UNSET;
+    this->file->file_num = 0;
+    this->file->current_offset = 0;
+    this->file->used_size = 0;
+    this->file->size = 0;
+    this->file->first_block = 0;
+    strcpy(this->file->name, "");
+    this->file->type = FILE_TYPE_UNSET;
 };
 myFILE::~myFILE(){
 
@@ -9,7 +16,7 @@ myFILE::~myFILE(){
 
 myFILE *myfopen(const char *pathname, const char *mode)
 {
-    myfile* myfile_ptr = new myfile();
+    myFILE* myfile_ptr = new myFILE();
     // myFILE *myFILE = new myFILE();
     // myFILE->myFILE_mode = UNSET;
     // myFILE->myFiles_open.push_back(pathname);
