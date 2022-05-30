@@ -23,7 +23,7 @@ myFILE *myfopen(const char *pathname, const char *mode)
 {
 
     myFILE *myfile_ptr = new myFILE();
-    if (strcmp(mode, "r"))
+    if (mode[0] == 'r' && strlen(mode) == 1)
     {
         int file_number = myopen(pathname, PERMISSION_READ);
         if (file_number == -1)
@@ -42,7 +42,7 @@ myFILE *myfopen(const char *pathname, const char *mode)
         myread(myfile_ptr->file->file_num, (void *)myfile_ptr->file_buffer, myfile_ptr->file->used_size);
         return myfile_ptr;
     }
-    else if (strcmp(mode, "w"))
+    else if (mode[0] == 'w' && strlen(mode) == 1)
     {
         int file_number = myopen(pathname, PERMISSION_WRITE);
         if (file_number == -1)
@@ -60,7 +60,7 @@ myFILE *myfopen(const char *pathname, const char *mode)
         myFILEs_open.push_back(inodes[file_number].name);
         myread(myfile_ptr->file->file_num, (void *)myfile_ptr->file_buffer, myfile_ptr->file->used_size);
     }
-    else if (strcmp(mode, "a"))
+    else if (mode[0] == 'a' && strlen(mode) == 1)
     {
         int file_number = myopen(pathname, PERMISSION_APPEND);
         if (file_number == -1)
@@ -78,7 +78,7 @@ myFILE *myfopen(const char *pathname, const char *mode)
         myFILEs_open.push_back(inodes[file_number].name);
         myread(myfile_ptr->file->file_num, (void *)myfile_ptr->file_buffer, myfile_ptr->file->used_size);
     }
-    else if (strcmp(mode, "r+"))
+    else if (mode[0] == 'r' && mode[1] == '+')
     {
         int file_number = myopen(pathname, PERMISSION_READ_WRITE);
         if (file_number == -1)
@@ -282,27 +282,60 @@ int myfprintf(myFILE *stream, const char *format, ...)
     {
         return -1;
     }
+    char buff[100] = {0}, tmp[20];
+    int i = 0, j = 0;
+    va_list vl;
+    va_start(vl, format);
+    while (format && format[i])
+    {
+        if (format[i] == '%')
+        {
+            i++;
+            switch (format[i])
+            {
+            /* Convert char */
+            case 'c':
+            {
+                buff[j] = (char)va_arg(vl, int);
+                j++;
+                break;
+            }
+            /* Convert decimal */
+            case 'd':
+            {
+                _itoa(va_arg(vl, int), tmp, 10);
+                strcpy(&buff[j], tmp);
+                j += strlen(tmp);
+                break;
+            }
+            case 'f':
+            {
+                _itoa(va_arg(vl, double), tmp, 10);
+                strcpy(&buff[j], tmp);
+                j += strlen(tmp);
+                break;
+            }
+                // /* copy string */
+                // case 's':
+                // {
+                //     str_arg = va_arg(vl, char *);
+                //     strcpy(&buff[j], str_arg);
+                //     j += strlen(str_arg);
+                //     break;
+                // }
+            }
+        }
+        else
+        {
+            buff[j] = format[i];
+            j++;
+        }
+        i++;
+    }
+    mywrite(stream->file->file_num, buff, j);
+    va_end(vl);
 
-    int current_offset = stream->file->current_offset;
-    int used_size = stream->file->used_size;
-    int size_to_print = used_size - current_offset;
-    int size_to_print_from_buffer = 0;
-    if (size_to_print > 0)
-    {
-        size_to_print_from_buffer = size_to_print;
-    }
-    else
-    {
-        return -1;
-    }
-    char *buffer = (char *)malloc(size_to_print_from_buffer);
-    memcpy(buffer, stream->file_buffer + current_offset, size_to_print_from_buffer);
-    va_list args;
-    va_start(args, format);
-    int result = vprintf(format, args);
-    va_end(args);
-    free(buffer);
-    return result;
+    return j;
 }
 
 int myprint(char *str, ...)
@@ -310,8 +343,6 @@ int myprint(char *str, ...)
     va_list vl;
     int i = 0, j = 0;
     char buff[100] = {0}, tmp[20];
-    char *str_arg;
-
     va_start(vl, str);
     while (str && str[i])
     {
@@ -342,30 +373,14 @@ int myprint(char *str, ...)
                 j += strlen(tmp);
                 break;
             }
-            /* Convert hex */
-            case 'x':
-            {
-                _itoa(va_arg(vl, int), tmp, 16);
-                strcpy(&buff[j], tmp);
-                j += strlen(tmp);
-                break;
-            }
-            /* Convert octal */
-            case 'o':
-            {
-                _itoa(va_arg(vl, int), tmp, 8);
-                strcpy(&buff[j], tmp);
-                j += strlen(tmp);
-                break;
-            }
-            /* copy string */
-            case 's':
-            {
-                str_arg = va_arg(vl, char *);
-                strcpy(&buff[j], str_arg);
-                j += strlen(str_arg);
-                break;
-            }
+                // /* copy string */
+                // case 's':
+                // {
+                //     str_arg = va_arg(vl, char *);
+                //     strcpy(&buff[j], str_arg);
+                //     j += strlen(str_arg);
+                //     break;
+                // }
             }
         }
         else
@@ -375,6 +390,7 @@ int myprint(char *str, ...)
         }
         i++;
     }
+
     fwrite(buff, j, 1, stdout);
     va_end(vl);
     return j;
@@ -429,7 +445,7 @@ int myscanf(char *str, ...)
 {
     va_list vl;
     int i = 0, j = 0, ret = 0;
-    char buff[100] = {0}, c;
+    char buff[5120] = {0}, c;
     char *out_loc;
     while (c != '\n')
     {
@@ -471,30 +487,14 @@ int myscanf(char *str, ...)
                 ret++;
                 break;
             }
-            case 'x':
-            {
-                *(int *)va_arg(vl, int *) =
-                    strtol(&buff[j], &out_loc, 16);
-                j += out_loc - &buff[j];
-                ret++;
-                break;
-            }
-            case 'o':
-            {
-                *(int *)va_arg(vl, int *) =
-                    strtol(&buff[j], &out_loc, 8);
-                j += out_loc - &buff[j];
-                ret++;
-                break;
-            }
-            case 's':
-            {
-                out_loc = (char *)va_arg(vl, char *);
-                strcpy(out_loc, &buff[j]);
-                j += strlen(&buff[j]);
-                ret++;
-                break;
-            }
+                // case 's':
+                // {
+                //     out_loc = (char *)va_arg(vl, char *);
+                //     strcpy(out_loc, &buff[j]);
+                //     j += strlen(&buff[j]);
+                //     ret++;
+                //     break;
+                // }
             }
         }
         else

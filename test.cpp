@@ -129,6 +129,21 @@ int main(int argc, char *argv[])
     printf("%s\n", buffer2);
     myclose(file_num2);
 
+    // test FILE
+    int a = 5;
+    myFILE *file = myfopen(file_name, "r");
+    char buffer3[100];
+    myfread(buffer3, 5, 0, file);
+    printf("return from myfread: %s\n", buffer3);
+    char buffer4[100] = "buffer 4 has written";
+    myfwrite(buffer4, 5, 0, file);
+    char buffer5[100];
+    myfscanf(file, "%s", buffer5);
+    printf("return from myfscanf: %s\n", buffer5);
+    char buffer6[100] = "buffer 6 has written";
+    myfprintf(file, "%s", buffer6);
+    myfclose(file);
+
     struct mydirent *directory_entry;
 
     if (root == NULL)
