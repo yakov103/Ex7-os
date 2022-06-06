@@ -235,6 +235,7 @@ int myfseek(myFILE *stream, long offset, int whence)
 
 int myfscanf(myFILE *stream, const char *format, ...)
 {
+    va_list args;
     // check if the file is opened in write mode
     if (stream->file->permition != PERMISSION_READ && stream->file->permition != PERMISSION_READ_WRITE && stream->file->permition != PERMISSION_APPEND)
     {
@@ -247,8 +248,8 @@ int myfscanf(myFILE *stream, const char *format, ...)
         return -1;
     }
 
-    int current_offset = stream->file->current_offset;
-    int used_size = stream->file->used_size;
+    int current_offset = inodes[stream->file->file_num].current_offset;
+    int used_size = inodes[stream->file->file_num].used_size;
     int size_to_scan = used_size - current_offset;
     int size_to_scan_from_buffer = 0;
     if (size_to_scan > 0)
@@ -259,15 +260,27 @@ int myfscanf(myFILE *stream, const char *format, ...)
     {
         return -1;
     }
-    char *buffer = (char *)malloc(size_to_scan_from_buffer);
-    memcpy(buffer, stream->file_buffer + current_offset, size_to_scan_from_buffer);
-    va_list args;
+    /**
+     * @brief get the argument and set it to the variable char_param *
+     *
+     */
+    char *char_param;
     va_start(args, format);
-    int result = vsscanf(buffer, format, args);
+    char_param = va_arg(args, char *);
     va_end(args);
-    free(buffer);
-    return result;
+    memcpy(char_param, stream->file_buffer + current_offset, size_to_scan_from_buffer);
+
+    return 0;
 }
+
+// char *buffer = (char *)malloc(size_to_scan_from_buffer);
+// memcpy(buffer, stream->file_buffer + current_offset, size_to_scan_from_buffer);
+
+// va_start(args, format);
+// int result = vsscanf(buffer, format, args);
+// va_end(args);
+// free(buffer);
+// return result;
 
 int myfprintf(myFILE *stream, const char *format, ...)
 {

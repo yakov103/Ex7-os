@@ -125,17 +125,28 @@ int main(int argc, char *argv[])
     myclose(file_num2);
 
     // test FILE
-    myFILE *file = myfopen(file_name, "r");
+    myFILE *file = myfopen(file_name, "r+");
     char buffer3[100];
-    myfread(buffer3, 5, 1, file);
+    myfread(buffer3, 14, 1, file);
     printf("return from myfread: %s\n", buffer3);
+    /* Seek to the beginning of the file */
+    mylseek(file->file->file_num, 0, SEEK_SET);
+
     char buffer4[100] = "buffer 4 has written";
     myfwrite(buffer4, 5, 1, file);
+
+    /* Seek to the beginning of the file */
+    mylseek(file->file->file_num, 0, SEEK_SET);
     char buffer5[100];
     myfscanf(file, "%s", buffer5);
     printf("return from myfscanf: %s\n", buffer5);
     char buffer6[100] = "buffer 6 has written";
     myfprintf(file, "%s", buffer6);
+    /* Seek to the beginning of the file */
+    mylseek(file->file->file_num, 0, SEEK_SET);
+    char buffer7[100];
+    myfscanf(file, "%s", buffer7);
+    printf("return from myfscanf: %s\n", buffer7);
     myfclose(file);
 
     struct mydirent *directory_entry;
@@ -163,6 +174,6 @@ int main(int argc, char *argv[])
 
     sync_fs();
 
-    print_fs();
+    // print_fs();
     return 0;
 } // main

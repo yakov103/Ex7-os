@@ -454,7 +454,7 @@ ssize_t mywrite(int myfd, void *buff, size_t count)
 
         int data_block_num = inodes[myfd].first_block;
         // printf("\ncount %ld \n", count);
-        int number_of_blocks_to_write = (int)count / BLOCKSIZE;
+        // int number_of_blocks_to_write = (int)count / BLOCKSIZE;
         // printf("\nnumber of blocks to read %d\n", number_of_blocks_to_write);
         int helper_choose_block = inodes[myfd].current_offset / BLOCKSIZE;
         int block_number = data_block_num + helper_choose_block;
