@@ -372,7 +372,7 @@ int myclose(int myfd)
 
 ssize_t myread(int myfd, void *buff, size_t count)
 {
-    printf("myread(%d, %p, %ld)\n", myfd, buff, count);
+    // printf("myread(%d, %p, %ld)\n", myfd, buff, count);
     char *data = (char *)buff;
     // check if myfd is opened
     if (std::find(myDIR::open_files.begin(), myDIR::open_files.end(), myfd) != myDIR::open_files.end())
@@ -399,11 +399,11 @@ ssize_t myread(int myfd, void *buff, size_t count)
         }
 
         int data_block_num = inodes[myfd].first_block;
-        printf("\ncount %ld \n", count);
+        // printf("\ncount %ld \n", count);
         int number_of_blocks_to_read = (int)count / BLOCKSIZE;
         number_of_blocks_to_read++;
 
-        printf("\nnumber of blocks to read %d\n", number_of_blocks_to_read);
+        // printf("\nnumber of blocks to read %d\n", number_of_blocks_to_read);
         int helper_choose_block = inodes[myfd].current_offset / BLOCKSIZE;
         int block_number = data_block_num + helper_choose_block;
         // int index_to_read = 0;
@@ -432,7 +432,7 @@ ssize_t myread(int myfd, void *buff, size_t count)
 
 ssize_t mywrite(int myfd, void *buff, size_t count)
 {
-    printf("mywrite(%d, %p, %ld)\n", myfd, buff, count);
+    // printf("mywrite(%d, %p, %ld)\n", myfd, buff, count);
     const char *data = (const char *)buff;
     if (std::find(myDIR::open_files.begin(), myDIR::open_files.end(), myfd) != myDIR::open_files.end())
     {
@@ -453,9 +453,9 @@ ssize_t mywrite(int myfd, void *buff, size_t count)
         }
 
         int data_block_num = inodes[myfd].first_block;
-        printf("\ncount %ld \n", count);
+        // printf("\ncount %ld \n", count);
         int number_of_blocks_to_write = (int)count / BLOCKSIZE;
-        printf("\nnumber of blocks to read %d\n", number_of_blocks_to_write);
+        // printf("\nnumber of blocks to read %d\n", number_of_blocks_to_write);
         int helper_choose_block = inodes[myfd].current_offset / BLOCKSIZE;
         int block_number = data_block_num + helper_choose_block;
 
@@ -485,7 +485,7 @@ ssize_t mywrite(int myfd, void *buff, size_t count)
 off_t mylseek(int fd, off_t offset, int whence)
 {
 
-    printf("mylseek(%d, %ld, %d)\n", fd, offset, whence);
+    // printf("mylseek(%d, %ld, %d)\n", fd, offset, whence);
     if (std::find(myDIR::open_files.begin(), myDIR::open_files.end(), fd) != myDIR::open_files.end())
     {
         if (inodes[fd].type == FILE_TYPE_DIRECTORY)
@@ -556,7 +556,7 @@ off_t mylseek(int fd, off_t offset, int whence)
 
 struct mydirent *myreaddir(myDIR *dir)
 {
-    printf("myreaddir()\n");
+    // printf("myreaddir()\n");
 
     while (*current_entry < 10)
     {

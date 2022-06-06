@@ -105,25 +105,23 @@ int main(int argc, char *argv[])
     // };
     const char *file_name = "first";
     int file_num = myopen(file_name, PERMISSION_READ_WRITE);
-    printf("file num is %d\n", file_num);
-
+    printf("myopen: file num is %d\n", file_num);
     std::string data = "yakov is good ";
-
     mywrite(file_num, (void *)data.c_str(), strlen(data.c_str()));
     mylseek(file_num, 6, SEEK_SET);
     char buffer[100];
     myread(file_num, buffer, 7);
-    printf("%s\n", buffer);
+    printf("myread value line 114: %s\n", buffer);
     myclose(file_num);
     const char *file_name2 = "second";
     int file_num2 = myopen(file_name2, PERMISSION_READ_WRITE);
-    printf("file num is %d\n", file_num2);
+    printf("myopen: file num is %d\n", file_num2);
     std::string data2 = "dolev dublon king ";
     mywrite(file_num2, (void *)data2.c_str(), strlen(data2.c_str()));
     mylseek(file_num2, 6, SEEK_SET);
     char buffer2[100];
     myread(file_num2, buffer2, 7);
-    printf("%s\n", buffer2);
+    printf("myread: %s\n", buffer2);
     myclose(file_num2);
 
     // test FILE
