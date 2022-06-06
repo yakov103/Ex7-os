@@ -115,13 +115,10 @@ int main(int argc, char *argv[])
     myread(file_num, buffer, 7);
     printf("%s\n", buffer);
     myclose(file_num);
-
     const char *file_name2 = "second";
     int file_num2 = myopen(file_name2, PERMISSION_READ_WRITE);
     printf("file num is %d\n", file_num2);
-
     std::string data2 = "dolev dublon king ";
-
     mywrite(file_num2, (void *)data2.c_str(), strlen(data2.c_str()));
     mylseek(file_num2, 6, SEEK_SET);
     char buffer2[100];

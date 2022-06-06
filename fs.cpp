@@ -362,6 +362,7 @@ int myclose(int myfd)
     {
         if (myDIR::open_files[i] == myfd)
         {
+            inodes[myfd].current_offset = 0;
             myDIR::open_files.erase(myDIR::open_files.begin() + i);
             return 0;
         }
