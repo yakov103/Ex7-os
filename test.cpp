@@ -111,7 +111,6 @@ int main(int argc, char *argv[])
     mylseek(file_num, 6, SEEK_SET);
     char buffer[100];
     myread(file_num, buffer, 7);
-    printf("myread value line 114: %s\n", buffer);
     myclose(file_num);
     const char *file_name2 = "second";
     int file_num2 = myopen(file_name2, PERMISSION_READ_WRITE);
