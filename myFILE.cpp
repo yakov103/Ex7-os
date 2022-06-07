@@ -269,11 +269,9 @@ int myfscanf(myFILE *stream, const char *format, ...)
     char_param = va_arg(args, char *);
     va_end(args);
     char buffer_to_copy[size_to_scan_from_buffer];
-
-    
     myread(stream->file->file_num, buffer_to_copy, size_to_scan_from_buffer);
     // break myFILE.cpp:273
-    strcpy(char_param, buffer_to_copy);
+    strncpy(char_param, buffer_to_copy, size_to_scan_from_buffer - 1);
     // memcpy(char_param, buffer_to_copy, size_to_scan_from_buffer+1);
 
     return 0;
