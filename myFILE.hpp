@@ -9,6 +9,7 @@
 #include <stdarg.h>
 #include <vector>
 #include <string>
+#include <string.h>
 #include "fs.hpp"
 // https://www.equestionanswers.com/c/c-printf-scanf-working-principle.php
 

@@ -268,7 +268,13 @@ int myfscanf(myFILE *stream, const char *format, ...)
     va_start(args, format);
     char_param = va_arg(args, char *);
     va_end(args);
-    memcpy(char_param, stream->file_buffer + current_offset, size_to_scan_from_buffer);
+    char buffer_to_copy[size_to_scan_from_buffer];
+
+    
+    myread(stream->file->file_num, buffer_to_copy, size_to_scan_from_buffer);
+    // break myFILE.cpp:273
+    strcpy(char_param, buffer_to_copy);
+    // memcpy(char_param, buffer_to_copy, size_to_scan_from_buffer+1);
 
     return 0;
 }
@@ -281,6 +287,17 @@ int myfscanf(myFILE *stream, const char *format, ...)
 // va_end(args);
 // free(buffer);
 // return result;
+
+int mystrlen(char *str)
+{
+
+    int i = 0;
+    while (str[i] != '\0')
+    {
+        i++;
+    }
+    return i;
+}
 
 int myfprintf(myFILE *stream, const char *format, ...)
 {
@@ -328,14 +345,12 @@ int myfprintf(myFILE *stream, const char *format, ...)
                 j += strlen(tmp);
                 break;
             }
-                // /* copy string */
-                // case 's':
-                // {
-                //     str_arg = va_arg(vl, char *);
-                //     strcpy(&buff[j], str_arg);
-                //     j += strlen(str_arg);
-                //     break;
-                // }
+            /* copy string */
+            case 's':
+            {
+                strcpy(&buff[j], va_arg(vl, char *));
+                break;
+            }
             }
         }
         else
@@ -345,10 +360,12 @@ int myfprintf(myFILE *stream, const char *format, ...)
         }
         i++;
     }
-    mywrite(stream->file->file_num, buff, j);
+    size_t size_to_write = mystrlen(buff);
+    // break myFILE.cpp:357
+    mywrite(stream->file->file_num, buff, size_to_write);
     va_end(vl);
 
-    return j;
+    return mystrlen(buff);
 }
 
 int myprint(char *str, ...)
