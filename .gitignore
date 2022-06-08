@@ -9,3 +9,5 @@ fs_data
 .vscode/dryrun.log
 .vscode/settings.json
 .vscode/targets.log
+libmyfs.so
+libmylibc.so

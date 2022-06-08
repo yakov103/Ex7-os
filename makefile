@@ -1,26 +1,34 @@
 CC=g++
 FLAGS=-std=c++2a -g -Wall 
 # -Werror -Wextra 
+# * libmylibc.so
+# * mystdio.h
 
-all:test 
+all:libmyfs.so  test 
+
+libmylibc.so:
+	$(CC) $(FLAGS) -fPIC -shared -o libmylibc.so myFILE.cpp 
+
+libmyfs.so:
+	$(CC) $(FLAGS) -fPIC -shared -o libmyfs.so myfs.cpp
 
 run:
 	./test 100
 
-test:test.o fs.o fs.hpp myFILE.o myFILE.hpp
-	$(CC) $(FLAGS) -o test test.o fs.o myFILE.o 
+test:test.o libmyfs.so libmylibc.so
+	$(CC) $(FLAGS) -o test test.o ./libmyfs.so ./libmylibc.so
 
-test.o: test.cpp fs.hpp
+test.o: test.cpp 
 	$(CC) $(FLAGS) -c test.cpp
 
-fs.o: fs.cpp fs.hpp
-	$(CC) $(FLAGS) -c fs.cpp
+myfs.o: myfs.cpp myfs.hpp
+	$(CC) $(FLAGS) -c myfs.cpp
 
 myFILE.o: myFILE.cpp myFILE.hpp
 	$(CC) $(FLAGS) -c myFILE.cpp
 
 clean:
-	rm -f *.o test fs_data a.out
+	rm -f *.o test fs_data a.out libmyfs.so libmylibc.so
 
 # mkfs:
 # 	$(CC) $(flags) -o mkfs mkfs.cpp; ./mkfs

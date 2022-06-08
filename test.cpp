@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "fs.hpp"
-#include "myFILE.hpp"
+#include "myfs.hpp"
+#include "mystdio.h"
 #include <string.h>
 #include <string>
 

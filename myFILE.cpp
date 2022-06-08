@@ -1,4 +1,4 @@
-#include "myFILE.hpp"
+#include "mystdio.h"
 
 vector<string> myFILEs_open;
 vector<simple_file *> myFILEs;
