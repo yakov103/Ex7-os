@@ -1,0 +1,12 @@
+asked nezer
+
+1.
+if we dont get a parameter in commandline for the size should i throw ? or give a defualt size?
+
+A: 
+
+2.
+the input is a number do you mean the number of inodes or the number of bytes?
+
+A:
+

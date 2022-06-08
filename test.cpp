@@ -4,27 +4,47 @@
 #include <string.h>
 #include <string>
 
+// uncomment this    if (argc == 1)
+// uncomment this    {
+// uncomment this        printf("\nNo Extra Command Line Argument Passed Other Than Program Name");
+// uncomment this    }
+// uncomment this    if (argc >= 2)
+// uncomment this    {
+// uncomment this        if (std::stoi(argv[1]) >= MAXFILESYSTEMSIZE)
+// uncomment this        {
+// uncomment this            printf("\nERROR:The Number Passed Is Greater Than file system memory\n");
+// uncomment this            return 1;
+// uncomment this        }
+// printf("\nNumber Of Arguments Passed: %d", argc);
+// printf("\n----Following Are The Command Line Arguments Passed----");
+// for (counter = 0; counter < argc; counter++)
+// {
+//     printf("\nargv[%d]: %s", counter, argv[counter]);
+// }
+// uncomment this    }
+
 int main(int argc, char *argv[])
 {
     // https://www.geeksforgeeks.org/command-line-arguments-in-c-cpp/
-    // uncomment this    if (argc == 1)
-    // uncomment this    {
-    // uncomment this        printf("\nNo Extra Command Line Argument Passed Other Than Program Name");
-    // uncomment this    }
-    // uncomment this    if (argc >= 2)
-    // uncomment this    {
-    // uncomment this        if (std::stoi(argv[1]) >= MAXFILESYSTEMSIZE)
-    // uncomment this        {
-    // uncomment this            printf("\nERROR:The Number Passed Is Greater Than file system memory\n");
-    // uncomment this            return 1;
-    // uncomment this        }
-    // printf("\nNumber Of Arguments Passed: %d", argc);
-    // printf("\n----Following Are The Command Line Arguments Passed----");
-    // for (counter = 0; counter < argc; counter++)
-    // {
-    //     printf("\nargv[%d]: %s", counter, argv[counter]);
-    // }
-    // uncomment this    }
+    if (argc == 1)
+    {
+        printf("\nNo Extra Command Line Argument Passed Other Than Program Name");
+        sb.num_inodes = 10;
+    }
+    if (argc >= 2)
+    {
+        if (std::stoi(argv[1]) >= MAXFILESYSTEMSIZE)
+        {
+            printf("\nERROR:The Number Passed Is Greater Than file system memory\n");
+            return 1;
+        }
+        // printf("\nNumber Of Arguments Passed: %d", argc);
+        // printf("\n----Following Are The Command Line Arguments Passed----");
+        // for (counter = 0; counter < argc; counter++)
+        // {
+        //     printf("\nargv[%d]: %s", counter, argv[counter]);
+        // }
+    }
 
     /**
      * @brief first check this

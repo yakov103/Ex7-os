@@ -84,8 +84,8 @@ int find_empty_block()
 // initialize new filesystem
 void create_fs()
 {
-    sb.num_inodes = 10;
-    sb.num_blocks = 100;
+    // sb.num_inodes = 10;
+    sb.num_blocks = sb.num_inodes * 10;
     sb.size_blocks = sizeof(struct disk_block);
 
     int i;
@@ -98,17 +98,23 @@ void create_fs()
         inodes[i].type = FILE_TYPE_UNSET;
 
     } // init inodes
+    int k = 0;
+    for (int j = 0; j < sb.num_inodes; j++)
+    {
+        inodes[j].first_block = k;
+        k += 10;
+    } // init blocks
 
-    inodes[0].first_block = 0;
-    inodes[1].first_block = 10;
-    inodes[2].first_block = 20;
-    inodes[3].first_block = 30;
-    inodes[4].first_block = 40;
-    inodes[5].first_block = 50;
-    inodes[6].first_block = 60;
-    inodes[7].first_block = 70;
-    inodes[8].first_block = 80;
-    inodes[9].first_block = 90;
+    // inodes[0].first_block = 0;
+    // inodes[1].first_block = 10;
+    // inodes[2].first_block = 20;
+    // inodes[3].first_block = 30;
+    // inodes[4].first_block = 40;
+    // inodes[5].first_block = 50;
+    // inodes[6].first_block = 60;
+    // inodes[7].first_block = 70;
+    // inodes[8].first_block = 80;
+    // inodes[9].first_block = 90;
 
     dbs = (struct disk_block *)malloc(sizeof(struct disk_block) * sb.num_blocks);
 
