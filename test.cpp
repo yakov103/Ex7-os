@@ -152,19 +152,20 @@ int main(int argc, char *argv[])
     mylseek(file->file->file_num, 0, SEEK_SET);
 
     char buffer4[100] = "buffer 4 has written";
-    myfwrite(buffer4, 5, 1, file);
+    myfwrite(buffer4, strlen(buffer4), 1, file);
 
     /* Seek to the beginning of the file */
     mylseek(file->file->file_num, 0, SEEK_SET);
     char buffer5[100];
-    myfscanf(file, "%s", buffer5);
+    myfscanf(file, "%s %d", buffer5);
     printf("return from myfscanf: %s\n", buffer5);
     char buffer6[100] = "buffer 6 has written";
-    myfprintf(file, "%s", buffer6);
+    int q = 0;
+    myfprintf(file, "%s %d", buffer6,q);
     /* Seek to the beginning of the file */
     mylseek(file->file->file_num, 0, SEEK_SET);
     char buffer7[100];
-    myfscanf(file, "%s", buffer7);
+    myfscanf(file, "%s %d", buffer7,q);
     printf("return from myfscanf: %s\n", buffer7);
     myfclose(file);
 

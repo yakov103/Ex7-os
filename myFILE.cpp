@@ -171,7 +171,7 @@ size_t myfwrite(const void *ptr, size_t size, size_t nmemb, myFILE *stream)
     }
     // use mywrite to write to the file
     mywrite(stream->file->file_num, (void *)ptr, size_to_write_from_buffer);
-
+    
     // memcpy(stream->file_buffer + current_offset, ptr, size_to_write_from_buffer);
     // stream->file->current_offset += size_to_write_from_buffer;
     return size_to_write_from_buffer;
