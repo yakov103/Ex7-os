@@ -330,7 +330,7 @@ int myfscanf(myFILE *stream, const char *format, ...)
                 tmp[j] = '\0';
                 *p = string_to_float(tmp);
                 j++;
-                        }
+            }
             else
             {
                 return -1;
