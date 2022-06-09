@@ -89,33 +89,6 @@ TEST_CASE("no throw")
 TEST_CASE("demo"){
     printf(CYN "**********second test**********\n" RESET);
     sb.num_inodes = 10;
-    CHECK_NOTHROW(mymkfs());
-    printf(GRN "CHECK_NOTHROW(mymkfs()); good!\n" RESET);
-
-    const char *dir_name = "root";
-    myDIR *root = myopendir(dir_name);
-    CHECK_NOTHROW(myopendir(dir_name));
-    printf(GRN "CHECK_NOTHROW(myopendir(dir_name)); good!\n" RESET);
-
-    const char *file_name = "test";
-    myopen(file_name, PERMISSION_READ_WRITE);
-    printf(GRN "myopen(file_name, PERMISSION_READ_WRITE); good!\n" RESET);
-    int file_num = myopen(file_name, PERMISSION_READ_WRITE);
-    std::string data = "yakov is good ";
-    mywrite(file_num, (void *)data.c_str(), strlen(data.c_str()));
-    CHECK_NOTHROW(mywrite(file_num, (void *)data.c_str(), strlen(data.c_str())));
-    printf(GRN "CHECK_NOTHROW(mywrite(file_num, (void *)data.c_str(), strlen(data.c_str()))); good!\n" RESET);
-
-    CHECK_NOTHROW(mylseek(file_num, 6, SEEK_SET));
-    printf(GRN "CHECK_NOTHROW(mylseek(file_num, 6, SEEK_SET)); good!\n" RESET);
-
-    char buffer[100];
-    CHECK_NOTHROW(myread(file_num, buffer, 7));
-    printf(GRN "CHECK_NOTHROW(myread(file_num, buffer, 7)); good!\n" RESET);
-    CHECK_NOTHROW(myclose(file_num));
-    const char *file_name2 = "second";
-    int file_num2 = myopen(file_name2, PERMISSION_READ_WRITE);
-    CHECK_NOTHROW(myopen(file_name2, PERMISSION_READ_WRITE));
-    printf(GRN "myopen(file_name2, PERMISSION_READ_WRITE); good!\n" RESET);
     
+
 }
