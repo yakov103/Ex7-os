@@ -157,8 +157,8 @@ size_t myfwrite(const void *ptr, size_t size, size_t nmemb, myFILE *stream)
         return 0;
     }
 
-    int current_offset = inodes[stream->file->file_num]->current_offset;
-    int used_size = inodes[stream->file->file_num]->used_size;
+    int current_offset = inodes[stream->file->file_num].current_offset;
+    int used_size = inodes[stream->file->file_num].used_size;
     int size_to_write = size * nmemb;
     int size_to_write_from_buffer = 0;
     if (current_offset + size_to_write > used_size)
