@@ -478,6 +478,7 @@ ssize_t mywrite(int myfd, void *buff, size_t count)
             }
             iter_number++;
         }
+        // if(inodes[myfd].used_size  
         inodes[myfd].used_size = inodes[myfd].current_offset + count;
     }
     else

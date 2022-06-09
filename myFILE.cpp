@@ -1,4 +1,5 @@
 #include "mystdio.h"
+#include <stdlib.h>
 
 vector<string> myFILEs_open;
 vector<simple_file *> myFILEs;
@@ -171,7 +172,7 @@ size_t myfwrite(const void *ptr, size_t size, size_t nmemb, myFILE *stream)
     }
     // use mywrite to write to the file
     mywrite(stream->file->file_num, (void *)ptr, size_to_write_from_buffer);
-    
+
     // memcpy(stream->file_buffer + current_offset, ptr, size_to_write_from_buffer);
     // stream->file->current_offset += size_to_write_from_buffer;
     return size_to_write_from_buffer;
@@ -285,18 +286,24 @@ int myfscanf(myFILE *stream, const char *format, ...)
             i++;
             if (format[i] == 'd')
             {
+                bzero(tmp, 20);
                 int *p = va_arg(vl, int *);
+                int x = 0;
                 while (buffer[j] != ' ' && buffer[j] != '\n' && buffer[j] != '\0')
                 {
-                    tmp[j] = buffer[j];
+                    tmp[x] = buffer[j];
                     j++;
+                    x++;
                 }
                 tmp[j] = '\0';
+                // break myFILE.cpp:301
+                // 
                 *p = atoi(tmp);
                 j++;
             }
             else if (format[i] == 's')
             {
+                bzero(tmp, 20);
                 char *p = va_arg(vl, char *);
                 while (buffer[j] != ' ' && buffer[j] != '\n' && buffer[j] != '\0')
                 {
@@ -309,6 +316,7 @@ int myfscanf(myFILE *stream, const char *format, ...)
             }
             else if (format[i] == 'c')
             {
+                bzero(tmp, 20);
                 char *p = va_arg(vl, char *);
                 while (buffer[j] != ' ' && buffer[j] != '\n' && buffer[j] != '\0')
                 {
@@ -321,6 +329,7 @@ int myfscanf(myFILE *stream, const char *format, ...)
             }
             else if (format[i] == 'f')
             {
+                bzero(tmp, 20);
                 float *p = va_arg(vl, float *);
                 while (buffer[j] != ' ' && buffer[j] != '\n' && buffer[j] != '\0')
                 {

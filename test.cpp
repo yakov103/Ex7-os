@@ -157,16 +157,18 @@ int main(int argc, char *argv[])
     /* Seek to the beginning of the file */
     mylseek(file->file->file_num, 0, SEEK_SET);
     char buffer5[100];
-    myfscanf(file, "%s %d", buffer5);
-    printf("return from myfscanf: %s\n", buffer5);
+    int number4 = 0;
+    myfscanf(file, "%s %d", buffer5, &number4);
+    printf("return from myfscanf: %s  : %d\n", buffer5, number4);
     char buffer6[100] = "buffer 6 has written";
+    mylseek(file->file->file_num, 0, SEEK_SET);
     int q = 0;
-    myfprintf(file, "%s %d", buffer6,q);
+    myfprintf(file, "%s", buffer6);
     /* Seek to the beginning of the file */
     mylseek(file->file->file_num, 0, SEEK_SET);
     char buffer7[100];
-    myfscanf(file, "%s %d", buffer7,q);
-    printf("return from myfscanf: %s\n", buffer7);
+    myfscanf(file, "%s %d", buffer7, &q);
+    printf("return from myfscanf: %s %d\n", buffer7, q);
     myfclose(file);
 
     struct mydirent *directory_entry;
