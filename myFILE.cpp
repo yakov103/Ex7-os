@@ -39,7 +39,7 @@ myFILE *myfopen(const char *pathname, const char *mode)
         strcpy(myfile_ptr->file->name, inodes[file_number].name);
         myfile_ptr->file->type = inodes[file_number].type;
         myFILEs_open.push_back(inodes[file_number].name);
-        myread(myfile_ptr->file->file_num, (void *)myfile_ptr->file_buffer, myfile_ptr->file->used_size);
+        // myread(myfile_ptr->file->file_num, (void *)myfile_ptr->file_buffer, myfile_ptr->file->used_size);
         return myfile_ptr;
     }
     else if (mode[0] == 'w' && strlen(mode) == 1)
@@ -137,7 +137,8 @@ size_t myfread(void *ptr, size_t size, size_t nmemb, myFILE *stream)
     {
         size_to_read_from_buffer = size_to_read;
     }
-    memcpy(ptr, stream->file_buffer + current_offset, size_to_read_from_buffer);
+    myread(stream->file->file_num, ptr, size_to_read_from_buffer);
+    // memcpy(ptr, stream->file_buffer + current_offset, size_to_read_from_buffer);
     stream->file->current_offset += size_to_read_from_buffer;
     return size_to_read_from_buffer;
 }
@@ -168,8 +169,11 @@ size_t myfwrite(const void *ptr, size_t size, size_t nmemb, myFILE *stream)
     {
         size_to_write_from_buffer = size_to_write;
     }
-    memcpy(stream->file_buffer + current_offset, ptr, size_to_write_from_buffer);
-    stream->file->current_offset += size_to_write_from_buffer;
+    // use mywrite to write to the file
+    mywrite(stream->file->file_num, (void *)ptr, size_to_write_from_buffer);
+
+    // memcpy(stream->file_buffer + current_offset, ptr, size_to_write_from_buffer);
+    // stream->file->current_offset += size_to_write_from_buffer;
     return size_to_write_from_buffer;
 }
 
@@ -235,7 +239,7 @@ int myfseek(myFILE *stream, long offset, int whence)
 
 int myfscanf(myFILE *stream, const char *format, ...)
 {
-    va_list args;
+
     // check if the file is opened in write mode
     if (stream->file->permition != PERMISSION_READ && stream->file->permition != PERMISSION_READ_WRITE && stream->file->permition != PERMISSION_APPEND)
     {
@@ -247,44 +251,75 @@ int myfscanf(myFILE *stream, const char *format, ...)
     {
         return -1;
     }
+    // need to be like myfprintf but the opposite
 
-    int current_offset = inodes[stream->file->file_num].current_offset;
+    // so first we start with myread
+    int current_offset = 0;
     int used_size = inodes[stream->file->file_num].used_size;
-    int size_to_scan = used_size - current_offset;
-    int size_to_scan_from_buffer = 0;
-    if (size_to_scan > 0)
+    int size_to_read = used_size - current_offset;
+    char *buffer = (char *)malloc(size_to_read);
+    // break myFILE.cpp:262
+    myread(stream->file->file_num, buffer, size_to_read);
+
+    // now we start to check which format we have
+    char tmp[20];
+    int i = 0, j = 0;
+    va_list vl;
+    va_start(vl, format);
+    while (format[i] != '\0')
     {
-        size_to_scan_from_buffer = size_to_scan;
+        if (format[i] == '%')
+        {
+            i++;
+            if (format[i] == 'd')
+            {
+                int *p = va_arg(vl, int *);
+                while (buffer[j] != ' ' && buffer[j] != '\n' && buffer[j] != '\0')
+                {
+                    tmp[j] = buffer[j];
+                    j++;
+                }
+                tmp[j] = '\0';
+                *p = atoi(tmp);
+                j++;
+            }
+            else if (format[i] == 's')
+            {
+                char *p = va_arg(vl, char *);
+                while (buffer[j] != ' ' && buffer[j] != '\n' && buffer[j] != '\0')
+                {
+                    tmp[j] = buffer[j];
+                    j++;
+                }
+                tmp[j] = '\0';
+                strcpy(p, tmp);
+                j++;
+            }
+            else if (format[i] == 'c')
+            {
+                char *p = va_arg(vl, char *);
+                while (buffer[j] != ' ' && buffer[j] != '\n' && buffer[j] != '\0')
+                {
+                    tmp[j] = buffer[j];
+                    j++;
+                }
+                tmp[j] = '\0';
+                *p = tmp[0];
+                j++;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+        else
+        {
+            i++;
+        }
     }
-    else
-    {
-        return -1;
-    }
-    /**
-     * @brief get the argument and set it to the variable char_param *
-     *
-     */
-    char *char_param;
-    va_start(args, format);
-    char_param = va_arg(args, char *);
-    va_end(args);
-    char buffer_to_copy[size_to_scan_from_buffer];
-    myread(stream->file->file_num, buffer_to_copy, size_to_scan_from_buffer);
-    // break myFILE.cpp:273
-    strncpy(char_param, buffer_to_copy, size_to_scan_from_buffer);
-    // memcpy(char_param, buffer_to_copy, size_to_scan_from_buffer+1);
 
     return 0;
 }
-
-// char *buffer = (char *)malloc(size_to_scan_from_buffer);
-// memcpy(buffer, stream->file_buffer + current_offset, size_to_scan_from_buffer);
-
-// va_start(args, format);
-// int result = vsscanf(buffer, format, args);
-// va_end(args);
-// free(buffer);
-// return result;
 
 int mystrlen(char *str)
 {
@@ -366,64 +401,6 @@ int myfprintf(myFILE *stream, const char *format, ...)
     return mystrlen(buff);
 }
 
-int myprint(char *str, ...)
-{
-    va_list vl;
-    int i = 0, j = 0;
-    char buff[100] = {0}, tmp[20];
-    va_start(vl, str);
-    while (str && str[i])
-    {
-        if (str[i] == '%')
-        {
-            i++;
-            switch (str[i])
-            {
-            /* Convert char */
-            case 'c':
-            {
-                buff[j] = (char)va_arg(vl, int);
-                j++;
-                break;
-            }
-            /* Convert decimal */
-            case 'd':
-            {
-                _itoa(va_arg(vl, int), tmp, 10);
-                strcpy(&buff[j], tmp);
-                j += strlen(tmp);
-                break;
-            }
-            case 'f':
-            {
-                _itoa(va_arg(vl, double), tmp, 10);
-                strcpy(&buff[j], tmp);
-                j += strlen(tmp);
-                break;
-            }
-                // /* copy string */
-                // case 's':
-                // {
-                //     str_arg = va_arg(vl, char *);
-                //     strcpy(&buff[j], str_arg);
-                //     j += strlen(str_arg);
-                //     break;
-                // }
-            }
-        }
-        else
-        {
-            buff[j] = str[i];
-            j++;
-        }
-        i++;
-    }
-
-    fwrite(buff, j, 1, stdout);
-    va_end(vl);
-    return j;
-}
-
 char *_itoa(int i, char *strout, int base)
 {
     char *str = strout;
@@ -467,71 +444,4 @@ char *_strrev(char *str)
         str[len - i - 1] = c;
     }
     return str;
-}
-
-int myscanf(char *str, ...)
-{
-    va_list vl;
-    int i = 0, j = 0, ret = 0;
-    char buff[5120] = {0}, c;
-    char *out_loc;
-    while (c != '\n')
-    {
-        if (fread(&c, 1, 1, stdin))
-        {
-            buff[i] = c;
-            i++;
-        }
-    }
-    va_start(vl, str);
-    i = 0;
-    while (str && str[i])
-    {
-        if (str[i] == '%')
-        {
-            i++;
-            switch (str[i])
-            {
-            case 'c':
-            {
-                *(char *)va_arg(vl, char *) = buff[j];
-                j++;
-                ret++;
-                break;
-            }
-            case 'd':
-            {
-                *(int *)va_arg(vl, int *) =
-                    strtol(&buff[j], &out_loc, 10);
-                j += out_loc - &buff[j];
-                ret++;
-                break;
-            }
-            case 'f':
-            {
-                *(float *)va_arg(vl, float *) =
-                    strtof(&buff[j], &out_loc);
-                j += out_loc - &buff[j];
-                ret++;
-                break;
-            }
-                // case 's':
-                // {
-                //     out_loc = (char *)va_arg(vl, char *);
-                //     strcpy(out_loc, &buff[j]);
-                //     j += strlen(&buff[j]);
-                //     ret++;
-                //     break;
-                // }
-            }
-        }
-        else
-        {
-            buff[j] = str[i];
-            j++;
-        }
-        i++;
-    }
-    va_end(vl);
-    return ret;
 }
