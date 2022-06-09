@@ -593,6 +593,6 @@ int myclosedir(myDIR *dir)
     // sync the data to the file system
     sync_fs();
     delete dir;
-    printf("myclosedir()\n");
+    // printf("myclosedir()\n");
     return 0;
 }; // myclosedir
