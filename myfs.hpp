@@ -12,7 +12,7 @@
 #include <sys/types.h>
 
 #define BLOCKSIZE 512
-#define MAXFILESYSTEMSIZE 51600
+#define MAXFILESYSTEMSIZE 500
 #define MAX_FILES 10000
 
 enum FileType
