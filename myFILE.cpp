@@ -237,6 +237,18 @@ int myfseek(myFILE *stream, long offset, int whence)
     return 0;
 }
 
+float string_to_float(char *str)
+{
+    float result = 0;
+    int i = 0;
+    while (str[i] != '\0')
+    {
+        result = result * 10 + (str[i] - '0');
+        i++;
+    }
+    return result;
+}
+
 int myfscanf(myFILE *stream, const char *format, ...)
 {
 
@@ -307,6 +319,18 @@ int myfscanf(myFILE *stream, const char *format, ...)
                 *p = tmp[0];
                 j++;
             }
+            else if (format[i] == 'f')
+            {
+                float *p = va_arg(vl, float *);
+                while (buffer[j] != ' ' && buffer[j] != '\n' && buffer[j] != '\0')
+                {
+                    tmp[j] = buffer[j];
+                    j++;
+                }
+                tmp[j] = '\0';
+                *p = string_to_float(tmp);
+                j++;
+                        }
             else
             {
                 return -1;
