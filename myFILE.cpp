@@ -157,8 +157,8 @@ size_t myfwrite(const void *ptr, size_t size, size_t nmemb, myFILE *stream)
         return 0;
     }
 
-    int current_offset = stream->file->current_offset;
-    int used_size = stream->file->used_size;
+    int current_offset = inodes[stream->file->file_num]->current_offset;
+    int used_size = inodes[stream->file->file_num]->used_size;
     int size_to_write = size * nmemb;
     int size_to_write_from_buffer = 0;
     if (current_offset + size_to_write > used_size)
@@ -270,7 +270,7 @@ int myfscanf(myFILE *stream, const char *format, ...)
     int used_size = inodes[stream->file->file_num].used_size;
     int size_to_read = used_size - current_offset;
     char *buffer = (char *)malloc(size_to_read);
-    // break myFILE.cpp:262
+    // break myFILE.cpp:273
     myread(stream->file->file_num, buffer, size_to_read);
 
     // now we start to check which format we have
