@@ -260,6 +260,9 @@ TEST_CASE("demo")
     CHECK(buffer2[25] == 'o');
     CHECK(buffer2[26] == 'd');
     CHECK(buffer2[27] == ' ');
+    printf(GRN "APPEND TEST good!\n" RESET);
+
+    
 
 
     printf(GRN "CHECK(strcmp(buffer, \"yakov\") == 0); good!\n" RESET);
