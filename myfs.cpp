@@ -467,9 +467,10 @@ ssize_t mywrite(int myfd, void *buff, size_t count)
 
         int index_to_write = inodes[myfd].current_offset % BLOCKSIZE;
         size_t iter_number = 0;
+        size_t data_index = 0;
         while (iter_number < count)
         {
-            dbs[block_number].data[index_to_write] = data[index_to_write];
+            dbs[block_number].data[index_to_write] = data[data_index];
             index_to_write++;
             if (index_to_write % BLOCKSIZE == 0)
             {
@@ -477,6 +478,7 @@ ssize_t mywrite(int myfd, void *buff, size_t count)
                 index_to_write = 0;
             }
             iter_number++;
+            data_index++;
         }
         // if(inodes[myfd].used_size
         inodes[myfd].used_size = inodes[myfd].current_offset + count;
