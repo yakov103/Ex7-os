@@ -126,8 +126,8 @@ size_t myfread(void *ptr, size_t size, size_t nmemb, myFILE *stream)
         return 0;
     }
 
-    int current_offset = stream->file->current_offset;
-    int used_size = stream->file->used_size;
+    int current_offset = inodes[stream->file->file_num].current_offset;
+    int used_size = inodes[stream->file->file_num].used_size;
     int size_to_read = size * nmemb;
     int size_to_read_from_buffer = 0;
     if (current_offset + size_to_read > used_size)
@@ -158,21 +158,15 @@ size_t myfwrite(const void *ptr, size_t size, size_t nmemb, myFILE *stream)
         return 0;
     }
 
-    int current_offset = inodes[stream->file->file_num].current_offset;
-    int used_size = inodes[stream->file->file_num].used_size;
+    // int current_offset = inodes[stream->file->file_num].current_offset;
+    // int used_size = inodes[stream->file->file_num].used_size;
     int size_to_write = size * nmemb;
     int size_to_write_from_buffer = 0;
-    if (current_offset + size_to_write > used_size)
-    {
-        size_to_write_from_buffer = used_size - current_offset;
-    }
-    else
-    {
-        size_to_write_from_buffer = size_to_write;
-    }
+    size_to_write_from_buffer = size_to_write;
+
     // use mywrite to write to the file
     mywrite(stream->file->file_num, (void *)ptr, size_to_write_from_buffer);
-
+    // break myFILE.cpp:164
     // memcpy(stream->file_buffer + current_offset, ptr, size_to_write_from_buffer);
     // stream->file->current_offset += size_to_write_from_buffer;
     return size_to_write_from_buffer;

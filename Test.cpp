@@ -261,11 +261,22 @@ TEST_CASE("demo")
     CHECK(buffer2[26] == 'd');
     CHECK(buffer2[27] == ' ');
     printf(GRN "APPEND TEST good!\n" RESET);
-
-    
-
-
     printf(GRN "CHECK(strcmp(buffer, \"yakov\") == 0); good!\n" RESET);
+
+    // open a second file and test myFILE
+    const char *file_name2 = "test5";
+    myFILE *filedp = myfopen(file_name2, "r+");
+    // CHECK(filedp != NULL);
+    printf(GRN "CHECK(filedp != NULL); good!\n" RESET);
+    char buffer3[100];
+    memset(buffer3, 0, 100);
+    char buffer4[100] = "grade 100 gpa 5.0 ";
+    myfwrite(buffer4, strlen(buffer4), 1, filedp);
+    myfread(buffer3, strlen(buffer4), 1, filedp);
+    // break Test.cpp:274 break Test.cpp:275 break myFILE.cpp:118
+    CHECK(strcmp(buffer3, buffer4) == 0);
+    printf(GRN "CHECK(strcmp(buffer3, buffer4) == 0); good!\n" RESET);
+
 
     struct mydirent *directory_entry;
     CHECK_NOTHROW(myreaddir(root));
