@@ -447,7 +447,7 @@ ssize_t mywrite(int myfd, void *buff, size_t count)
             printf("directory\n");
             return 0;
         }
-        if (inodes[myfd].permission != PERMISSION_WRITE && inodes[myfd].permission != PERMISSION_READ_WRITE && myfd == 0)
+        if (inodes[myfd].permission != PERMISSION_WRITE && inodes[myfd].permission != PERMISSION_READ_WRITE && inodes[myfd].permission != PERMISSION_APPEND && myfd == 0)
         {
             printf("permission not set to write! denied\n");
             return 0;

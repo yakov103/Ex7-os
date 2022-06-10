@@ -135,12 +135,10 @@ TEST_CASE("no throw")
     CHECK_NOTHROW(mylseek(file->file->file_num, 0, SEEK_SET));
     printf(GRN "mylseek(file->file->file_num, 0, SEEK_SET); good!\n" RESET);
 
-
     // test myfseek
     myfseek(file, 6, SEEK_SET);
     CHECK_NOTHROW(myfseek(file, 6, SEEK_SET));
     printf(GRN "myfseek(file, 6, SEEK_SET); good!\n" RESET);
-    
 
     char buffer4[100] = "buffer 4.5 has written";
     myfwrite(buffer4, strlen(buffer4), 1, file);
@@ -181,7 +179,6 @@ TEST_CASE("no throw")
     CHECK_NOTHROW(myfclose(file));
     printf(GRN "myfclose(file); good!\n" RESET);
 
-
     struct mydirent *directory_entry;
     CHECK_NOTHROW(myreaddir(root));
     printf(GRN "CHECK_NOTHROW(myreaddir(root)); good!\n" RESET);
@@ -214,13 +211,42 @@ TEST_CASE("demo")
     std::string data = "yakov is good ";
     mywrite(file_num, (void *)data.c_str(), strlen(data.c_str()));
     char buffer[100];
+    memset(buffer, 0, 100);
     myread(file_num, buffer, 5);
-    CHECK(strcmp(buffer, "yakov") == 0);
+    CHECK(strncmp(buffer, "yakov", 5) == 0);
     printf(GRN "CHECK(strcmp(buffer, \"yakov\") == 0); good!\n" RESET);
     mylseek(file_num, 6, SEEK_SET);
     myread(file_num, buffer, 7);
     CHECK(strcmp(buffer, "is good") == 0);
     printf(GRN "CHECK(strcmp(buffer, \"is good\") == 0); good!\n" RESET);
+    // close the file and open it in append mode and test
+    myclose(file_num);
+    file_num = myopen(file_name, PERMISSION_APPEND);
+    // clean buffer
+    char buffer2[100];
+    memset(buffer2, 0, 100);
+    mywrite(file_num, (void *)data.c_str(), strlen(data.c_str()));
+
+    myread(file_num, buffer2, 2 * strlen(data.c_str()));
+    // CHECK(strcmp(buffer, "yakov is good yakov is good") == 0);
+    size_t len = 28;
+    CHECK(strlen(buffer) == len);
+    CHECK(buffer2[0] == 'y');
+    CHECK(buffer2[1] == 'a');
+    CHECK(buffer2[2] == 'k');
+    CHECK(buffer2[3] == 'o');
+    CHECK(buffer2[4] == 'v');
+    CHECK(buffer2[5] == ' ');
+    CHECK(buffer2[6] == 'i');
+    CHECK(buffer2[7] == 's');
+    CHECK(buffer2[8] == ' ');
+    CHECK(buffer2[9] == 'g');
+    CHECK(buffer2[10] == 'o');
+    CHECK(buffer2[11] == 'o');
+    CHECK(buffer2[12] == 'd');
+    CHECK(buffer2[13] == ' ');
+
+    printf(GRN "CHECK(strcmp(buffer, \"yakov\") == 0); good!\n" RESET);
 
     struct mydirent *directory_entry;
     CHECK_NOTHROW(myreaddir(root));
