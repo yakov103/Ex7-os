@@ -222,15 +222,16 @@ TEST_CASE("demo")
     // close the file and open it in append mode and test
     myclose(file_num);
     file_num = myopen(file_name, PERMISSION_APPEND);
+    // break Test.cpp:229  break myfs.cpp:442
     // clean buffer
     char buffer2[100];
     memset(buffer2, 0, 100);
     mywrite(file_num, (void *)data.c_str(), strlen(data.c_str()));
-
-    myread(file_num, buffer2, 2 * strlen(data.c_str()));
+    myclose(file_num);
+    file_num = myopen(file_name, PERMISSION_READ_WRITE);
+    myread(file_num, buffer2, 28);
     // CHECK(strcmp(buffer, "yakov is good yakov is good") == 0);
-    size_t len = 28;
-    CHECK(strlen(buffer) == len);
+
     CHECK(buffer2[0] == 'y');
     CHECK(buffer2[1] == 'a');
     CHECK(buffer2[2] == 'k');
@@ -245,6 +246,21 @@ TEST_CASE("demo")
     CHECK(buffer2[11] == 'o');
     CHECK(buffer2[12] == 'd');
     CHECK(buffer2[13] == ' ');
+    CHECK(buffer2[14] == 'y');
+    CHECK(buffer2[15] == 'a');
+    CHECK(buffer2[16] == 'k');
+    CHECK(buffer2[17] == 'o');
+    CHECK(buffer2[18] == 'v');
+    CHECK(buffer2[19] == ' ');
+    CHECK(buffer2[20] == 'i');
+    CHECK(buffer2[21] == 's');
+    CHECK(buffer2[22] == ' ');
+    CHECK(buffer2[23] == 'g');
+    CHECK(buffer2[24] == 'o');
+    CHECK(buffer2[25] == 'o');
+    CHECK(buffer2[26] == 'd');
+    CHECK(buffer2[27] == ' ');
+
 
     printf(GRN "CHECK(strcmp(buffer, \"yakov\") == 0); good!\n" RESET);
 
