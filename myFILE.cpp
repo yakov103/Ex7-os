@@ -235,7 +235,7 @@ int myfseek(myFILE *stream, long offset, int whence)
 
 int myfscanf(myFILE *stream, const char *format, ...)
 {
-
+    myfseek(stream, 0, SEEK_SET);
     // check if the file is opened in write mode
     if (stream->file->permition != PERMISSION_READ && stream->file->permition != PERMISSION_READ_WRITE && stream->file->permition != PERMISSION_APPEND)
     {
@@ -288,12 +288,14 @@ int myfscanf(myFILE *stream, const char *format, ...)
             {
                 bzero(tmp, 20);
                 char *p = va_arg(vl, char *);
+                int x = 0;
                 while (buffer[j] != ' ' && buffer[j] != '\n' && buffer[j] != '\0')
                 {
-                    tmp[j] = buffer[j];
+                    tmp[x] = buffer[j];
                     j++;
+                    x++;
                 }
-                tmp[j] = '\0';
+                tmp[x] = '\0';
                 strcpy(p, tmp);
                 j++;
             }

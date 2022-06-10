@@ -270,7 +270,7 @@ TEST_CASE("demo")
     printf(GRN "CHECK(filedp != NULL); good!\n" RESET);
     char buffer3[100];
     memset(buffer3, 0, 100);
-    char buffer4[100] = "grade 100 gpa 5.0 ";
+    char buffer4[100] = "grade 100 gpa 4.9 ";
     myfwrite(buffer4, strlen(buffer4), 1, filedp);
     myfread(buffer3, strlen(buffer4), 1, filedp);
     // break Test.cpp:274 break Test.cpp:275 break myFILE.cpp:118
@@ -279,11 +279,24 @@ TEST_CASE("demo")
     // clean buffer
     memset(buffer3, 0, 100);
     myfseek(filedp, 6, SEEK_SET);
-    
+
     myfread((void *)buffer3, strlen(buffer4) - 15, 1, filedp);
     CHECK(strcmp(buffer3, "100") == 0);
     printf(GRN "Fseek test CHECK(strcmp(buffer3, \"100\") == 0); good!\n" RESET);
-
+    int grade = 0;
+    float gpa = 0.0;
+    char word[100];
+    char word2[100];
+    myfscanf(filedp, "%s %d %s %f", word, &grade, word2, &gpa);
+    CHECK(strncmp(word, "grade", 5) == 0);
+    printf(GRN "CHECK(strcmp(word, \"grade\") == 0); good!\n" RESET);
+    CHECK(grade == 100);
+    printf(GRN "CHECK(grade == 100); good!\n" RESET);
+    CHECK(strncmp(word2, "gpa", 3) == 0);
+    printf(GRN "CHECK(strcmp(word2, \"gpa\") == 0); good!\n" RESET);
+    CHECK(gpa == 4.9f);
+    printf(GRN "CHECK(gpa == 4.9); good!\n" RESET);
+    printf(GRN "Fscanf test good!\n" RESET);
 
     struct mydirent *directory_entry;
     CHECK_NOTHROW(myreaddir(root));
