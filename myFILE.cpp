@@ -114,7 +114,7 @@ int myfclose(myFILE *stream)
 
 size_t myfread(void *ptr, size_t size, size_t nmemb, myFILE *stream)
 {
-    // check if the file is opened in write mode
+    // check if the file is opened in write mode break myFILE.cpp:118
     if (stream->file->permition != PERMISSION_READ && stream->file->permition != PERMISSION_READ_WRITE && stream->file->permition != PERMISSION_APPEND)
     {
         return 0;
@@ -187,8 +187,8 @@ int myfseek(myFILE *stream, long offset, int whence)
         return -1;
     }
 
-    int current_offset = stream->file->current_offset;
-    int used_size = stream->file->used_size;
+    int current_offset = inodes[stream->file->file_num].current_offset;
+    int used_size = inodes[stream->file->file_num].used_size;
     int size_to_seek = offset;
     int size_to_seek_from_buffer = 0;
     if (whence == SEEK_SET)
@@ -229,6 +229,7 @@ int myfseek(myFILE *stream, long offset, int whence)
         return -1;
     }
     stream->file->current_offset = size_to_seek_from_buffer;
+    inodes[stream->file->file_num].current_offset = size_to_seek_from_buffer;
     return 0;
 }
 

@@ -276,6 +276,13 @@ TEST_CASE("demo")
     // break Test.cpp:274 break Test.cpp:275 break myFILE.cpp:118
     CHECK(strcmp(buffer3, buffer4) == 0);
     printf(GRN "CHECK(strcmp(buffer3, buffer4) == 0); good!\n" RESET);
+    // clean buffer
+    memset(buffer3, 0, 100);
+    myfseek(filedp, 6, SEEK_SET);
+    
+    myfread((void *)buffer3, strlen(buffer4) - 15, 1, filedp);
+    CHECK(strcmp(buffer3, "100") == 0);
+    printf(GRN "Fseek test CHECK(strcmp(buffer3, \"100\") == 0); good!\n" RESET);
 
 
     struct mydirent *directory_entry;

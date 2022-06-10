@@ -109,6 +109,8 @@ int main(int argc, char *argv[])
         printf(">> %s\n", directory_entry->d_name);
     }
     myclosedir(root);
+
+    print_fs();
     sync_fs();
 
     return 0;
