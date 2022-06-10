@@ -24,12 +24,12 @@ enum FileType
 
 enum Permission
 {
-    PERMISSION_READ,      // 0
-    PERMISSION_WRITE,     // 1
-    PERMISSION_EXECUTE,   // 2
-    PERMISSION_UNSET,     // 3
+    PERMISSION_READ,       // 0
+    PERMISSION_WRITE,      // 1
+    PERMISSION_EXECUTE,    // 2
+    PERMISSION_UNSET,      // 3
     PERMISSION_READ_WRITE, // 4
-    PERMISSION_APPEND // 5
+    PERMISSION_APPEND      // 5
 };
 
 struct superblock
@@ -57,7 +57,7 @@ struct inode
 };
 
 void create_fs(); // initialize new filesystem
-void mount_fs();  // load a file system
+void mymount();   // load a file system
 void sync_fs();   // write the file system
 
 class myDIR

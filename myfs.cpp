@@ -126,7 +126,7 @@ void create_fs()
 } // create filesystem
 
 // load a file system
-void mount_fs()
+void mymount()
 {
     FILE *file;
     file = fopen("fs_data", "r");
@@ -143,7 +143,7 @@ void mount_fs()
     file_entry = (struct mydirent *)malloc(sizeof(struct mydirent));
     current_entry = (int *)malloc(sizeof(int));
     fclose(file);
-} // mount_fs()
+} // mymount()
 
 // write the file system
 void sync_fs()
@@ -478,7 +478,7 @@ ssize_t mywrite(int myfd, void *buff, size_t count)
             }
             iter_number++;
         }
-        // if(inodes[myfd].used_size  
+        // if(inodes[myfd].used_size
         inodes[myfd].used_size = inodes[myfd].current_offset + count;
     }
     else
