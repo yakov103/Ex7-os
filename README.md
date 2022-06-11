@@ -5,6 +5,8 @@
 - [@Dolev Dublon, ID: 207867342](https://www.github.com/dolev146)
 - [@Yakov Khodorkovsky, ID: 207045063 ](https://www.github.com/yakov103)
 
+[![IMAGE ALT TEXT HERE](https://user-images.githubusercontent.com/62290677/169662935-c8e019cc-17ef-4984-8ce0-792a7ede9096.png)](https://www.youtube.com/watch?v=dRJ1sNYKU78)
+
 # How it works && how to run
 
 we create a file named fs_data , which is going to be the file system.
