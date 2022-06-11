@@ -1,5 +1,5 @@
 
-# Ex7-os
+# Ex7-os will compile only on ubuntu 20.04!! due to use of doctest.h for testing
 ## Authors
 
 - [@Dolev Dublon, ID: 207867342](https://www.github.com/dolev146)
@@ -68,7 +68,7 @@ const char *restrict format, ...);
 
 ```
 
-# How it works
+# How it works && how to run
 
 we create a file named fs_data , which is going to be the file system.
 the size of the file will be determined by the parameter entered.
@@ -87,12 +87,19 @@ file name cant be longer than 8 bytes
 
 to see the change in the filesystem 
 ```bash
-  make; ./test
+  make; ./demo
 ```
-
 ```
 less fs_data 
 ```
+```
+  makel ./test
+```
+![image](https://user-images.githubusercontent.com/62290677/173178073-17cd760d-3941-4bb4-9a2f-84fda4c03b4d.png)
+![image](https://user-images.githubusercontent.com/62290677/173178119-0049493c-b94b-4ae8-a938-2f8815ba9ec3.png)
+![image](https://user-images.githubusercontent.com/62290677/173178151-8d96c7af-d74f-4083-9f20-20154ada7554.png)
+
+
 
 ## Run Locally
 
@@ -131,5 +138,10 @@ first  run the server
 ```bash
   make clean;  make; ./test
 ```
+
+![image](https://user-images.githubusercontent.com/62290677/173178077-5f0c1144-da39-4724-9441-63f26a8f3961.png)
+![image](https://user-images.githubusercontent.com/62290677/173178116-bc391684-0ede-4d86-bf2f-1d869a0b634c.png)
+![image](https://user-images.githubusercontent.com/62290677/173178155-ef9e2d1f-ca49-4698-9ff5-fb56a3aae89c.png)
+
 
 
