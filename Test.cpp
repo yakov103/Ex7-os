@@ -298,6 +298,30 @@ TEST_CASE("demo")
     printf(GRN "CHECK(gpa == 4.9); good!\n" RESET);
     printf(GRN "Fscanf test good!\n" RESET);
 
+    // close file
+    myfclose(filedp);
+    // open a third file and test myFILE
+    const char *file_name3 = "test6";
+    myFILE *filedp2 = myfopen(file_name3, "r+");
+    // check myfprintf
+    char buffer9[100] = "grade 99 gpa 3.9 ";
+    char word5[20] = "grade";
+    char word6[20] = "gpa";
+    int grade2 = 99;
+    float gpa2 = 3.9f;
+    myfprintf(filedp2, "%s %d %s %f ", &word5, grade2, &word6, &gpa2);
+    // clean buffer
+    memset(buffer3, 0, 100);
+    // now read the file
+    myfread(buffer3, strlen(buffer9) + 1, 1, filedp2);
+    char result[100] = "grade  99 gpa  3.9";
+    CHECK(strcmp(buffer3, result) == 0);
+    printf(GRN "CHECK(strcmp(buffer3, result) == 0); good!\n" RESET);
+    printf(GRN "myfprintf test good!\n" RESET);
+    // close file
+    myfclose(filedp2);
+    
+
     struct mydirent *directory_entry;
     CHECK_NOTHROW(myreaddir(root));
     printf(GRN "CHECK_NOTHROW(myreaddir(root)); good!\n" RESET);

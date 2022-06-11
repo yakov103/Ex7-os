@@ -368,6 +368,7 @@ int myfprintf(myFILE *stream, const char *format, ...)
         return -1;
     }
     char buff[100] = {0}, tmp[20];
+    int s_amount = 0;
     int i = 0, j = 0;
     va_list vl;
     va_start(vl, format);
@@ -381,6 +382,7 @@ int myfprintf(myFILE *stream, const char *format, ...)
             /* Convert char */
             case 'c':
             {
+                bzero(tmp, 20);
                 buff[j] = (char)va_arg(vl, int);
                 j++;
                 break;
@@ -388,6 +390,7 @@ int myfprintf(myFILE *stream, const char *format, ...)
             /* Convert decimal */
             case 'd':
             {
+                bzero(tmp, 20);
                 _itoa(va_arg(vl, int), tmp, 10);
                 strcpy(&buff[j], tmp);
                 j += strlen(tmp);
@@ -395,15 +398,41 @@ int myfprintf(myFILE *stream, const char *format, ...)
             }
             case 'f':
             {
-                _itoa(va_arg(vl, double), tmp, 10);
-                strcpy(&buff[j], tmp);
-                j += strlen(tmp);
+                bzero(tmp, 20);
+                float *p = va_arg(vl, float *);
+                // copy the float to tmp
+                sprintf(tmp, "%f", *p);
+                int x = 0;
+                while (tmp[x] != ' ' && tmp[x] != '\n' && tmp[x] != '\0' && tmp[x] != '0')
+                {
+                    buff[j] = tmp[x];
+                    j++;
+                    x++;
+                }
+                // tmp[x] = '\0';
+                // *p = atof(tmp);
+                j++;
                 break;
             }
             /* copy string */
             case 's':
             {
-                strcpy(&buff[j], va_arg(vl, char *));
+                // copy the string from the va_arg
+                s_amount++;
+                // strcpy(&buff[j], va_arg(vl, char *));
+                bzero(tmp, 20);
+                char *p = va_arg(vl, char *);
+                int x = 0;
+                while (p[x] != ' ' && p[x] != '\n' && p[x] != '\0')
+                {
+                    buff[j] = p[x];
+                    j++;
+                    x++;
+                }
+                buff[j] = ' ';
+                // tmp[x] = '\0';
+                // strcpy(p, tmp);
+                j++;
                 break;
             }
             }
@@ -417,7 +446,7 @@ int myfprintf(myFILE *stream, const char *format, ...)
     }
     size_t size_to_write = mystrlen(buff);
     // break myFILE.cpp:357
-    mywrite(stream->file->file_num, buff, size_to_write);
+    mywrite(stream->file->file_num, buff, size_to_write + s_amount);
     va_end(vl);
 
     return mystrlen(buff);
