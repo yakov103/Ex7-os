@@ -5,6 +5,44 @@
 - [@Dolev Dublon, ID: 207867342](https://www.github.com/dolev146)
 - [@Yakov Khodorkovsky, ID: 207045063 ](https://www.github.com/yakov103)
 
+# How it works && how to run
+
+we create a file named fs_data , which is going to be the file system.
+the size of the file will be determined by the parameter entered.
+
+which contain a superblock
+10% inodes
+and the other 90% of the size will be the datablocks 512 bytes size each
+
+the max file size is 5120
+the main folder is the root folder.
+which will contain all the files in the file system.
+
+dirent contains d_name member so that in order to look for files in the filesystem
+we open the root folder and iterate over the directory entry and print the files names
+file name cant be longer than 8 bytes
+
+to see the change in the filesystem 
+```bash
+  make; ./demo
+```
+```
+less fs_data 
+```
+```
+  make ./test
+```
+![image](https://user-images.githubusercontent.com/62290677/173178073-17cd760d-3941-4bb4-9a2f-84fda4c03b4d.png)
+![image](https://user-images.githubusercontent.com/62290677/173178119-0049493c-b94b-4ae8-a938-2f8815ba9ec3.png)
+![image](https://user-images.githubusercontent.com/62290677/173178151-8d96c7af-d74f-4083-9f20-20154ada7554.png)
+
+you can also specify an amount of files (inodes) you want in the system as a aparameter
+
+```
+  make clean; make; ./demo 20 
+```
+20 will be the amount of inodes you will get.
+
 # Bulding FAT32 virtual file system demo
 
 in this project we need to make a virtual file system replica 
@@ -67,37 +105,6 @@ int myfprintf(myFILE *restrict stream,
 const char *restrict format, ...);
 
 ```
-
-# How it works && how to run
-
-we create a file named fs_data , which is going to be the file system.
-the size of the file will be determined by the parameter entered.
-
-which contain a superblock
-10% inodes
-and the other 90% of the size will be the datablocks 512 bytes size each
-
-the max file size is 5120
-the main folder is the root folder.
-which will contain all the files in the file system.
-
-dirent contains d_name member so that in order to look for files in the filesystem
-we open the root folder and iterate over the directory entry and print the files names
-file name cant be longer than 8 bytes
-
-to see the change in the filesystem 
-```bash
-  make; ./demo
-```
-```
-less fs_data 
-```
-```
-  make ./test
-```
-![image](https://user-images.githubusercontent.com/62290677/173178073-17cd760d-3941-4bb4-9a2f-84fda4c03b4d.png)
-![image](https://user-images.githubusercontent.com/62290677/173178119-0049493c-b94b-4ae8-a938-2f8815ba9ec3.png)
-![image](https://user-images.githubusercontent.com/62290677/173178151-8d96c7af-d74f-4083-9f20-20154ada7554.png)
 
 
 
