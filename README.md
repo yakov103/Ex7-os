@@ -37,6 +37,13 @@ less fs_data
 ![image](https://user-images.githubusercontent.com/62290677/173178151-8d96c7af-d74f-4083-9f20-20154ada7554.png)
 ![image](https://user-images.githubusercontent.com/62290677/173178340-c7199147-6c94-486e-a52a-0b1fecda1143.png)
 
+# sources
+*  https://www.geeksforgeeks.org/command-line-arguments-in-c-cpp/
+*  https://www.equestionanswers.com/c/c-printf-scanf-working-principle.php
+*  https://www.youtube.com/watch?v=n2AAhiujAqs&t=3777s
+*  https://github.com/dolev146/youtube-file-system
+
+
 you can also specify an amount of files (inodes) you want in the system as a aparameter
 
 ```
