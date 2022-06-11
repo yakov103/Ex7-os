@@ -35,6 +35,7 @@ less fs_data
 ![image](https://user-images.githubusercontent.com/62290677/173178073-17cd760d-3941-4bb4-9a2f-84fda4c03b4d.png)
 ![image](https://user-images.githubusercontent.com/62290677/173178119-0049493c-b94b-4ae8-a938-2f8815ba9ec3.png)
 ![image](https://user-images.githubusercontent.com/62290677/173178151-8d96c7af-d74f-4083-9f20-20154ada7554.png)
+![image](https://user-images.githubusercontent.com/62290677/173178340-c7199147-6c94-486e-a52a-0b1fecda1143.png)
 
 you can also specify an amount of files (inodes) you want in the system as a aparameter
 
