@@ -93,7 +93,7 @@ to see the change in the filesystem
 less fs_data 
 ```
 ```
-  makel ./test
+  make ./test
 ```
 ![image](https://user-images.githubusercontent.com/62290677/173178073-17cd760d-3941-4bb4-9a2f-84fda4c03b4d.png)
 ![image](https://user-images.githubusercontent.com/62290677/173178119-0049493c-b94b-4ae8-a938-2f8815ba9ec3.png)
