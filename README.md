@@ -5,7 +5,6 @@
 - [@Dolev Dublon, ID: 207867342](https://www.github.com/dolev146)
 - [@Yakov Khodorkovsky, ID: 207045063 ](https://www.github.com/yakov103)
 
-![image]()
 
 [![IMAGE ALT TEXT HERE](https://user-images.githubusercontent.com/62290677/173179185-a674d27a-e64e-424f-9ff6-af75dbdc8a7f.png)](https://www.youtube.com/watch?v=I05b-Hz4x1I)
 
