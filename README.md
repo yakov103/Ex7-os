@@ -36,7 +36,6 @@ less fs_data
   make ./test
 ```
 ![image](https://user-images.githubusercontent.com/62290677/173178073-17cd760d-3941-4bb4-9a2f-84fda4c03b4d.png)
-![image](https://user-images.githubusercontent.com/62290677/173178119-0049493c-b94b-4ae8-a938-2f8815ba9ec3.png)
 ![image](https://user-images.githubusercontent.com/62290677/173178151-8d96c7af-d74f-4083-9f20-20154ada7554.png)
 ![image](https://user-images.githubusercontent.com/62290677/173178340-c7199147-6c94-486e-a52a-0b1fecda1143.png)
 
@@ -158,7 +157,6 @@ first  run the server
 ```
 
 ![image](https://user-images.githubusercontent.com/62290677/173178077-5f0c1144-da39-4724-9441-63f26a8f3961.png)
-![image](https://user-images.githubusercontent.com/62290677/173178116-bc391684-0ede-4d86-bf2f-1d869a0b634c.png)
 ![image](https://user-images.githubusercontent.com/62290677/173178155-ef9e2d1f-ca49-4698-9ff5-fb56a3aae89c.png)
 
 
