@@ -1,5 +1,7 @@
+# VFS - Virtual File System
 
-# Ex7-os will compile only on ubuntu 20.04!! due to use of doctest.h for testing
+
+# The Project will compile only on ubuntu 20.04!! due to use of doctest.h for testing
 ## Authors
 
 - [@Dolev Dublon, ID: 207867342](https://www.github.com/dolev146)
